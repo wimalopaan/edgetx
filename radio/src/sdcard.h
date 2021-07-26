@@ -53,7 +53,7 @@
 
 #define LEN_FILE_PATH_MAX   (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + "/"
 
-#if defined(COLORLCD)
+#if defined(COLORLCD) || defined(EEPROM_SDCARD)
 #define RADIO_FILENAME      "radio.bin"
 const char RADIO_MODELSLIST_PATH[] = RADIO_PATH PATH_SEPARATOR "models.txt";
 const char RADIO_SETTINGS_PATH[] = RADIO_PATH PATH_SEPARATOR RADIO_FILENAME;
@@ -81,7 +81,7 @@ const char RADIO_SETTINGS_YAML_PATH[] = RADIO_PATH PATH_SEPARATOR "radio.yml";
 #define ELRS_FIRMWARE_EXT   ".elrs"
 #define YAML_EXT            ".yml"
 
-#if defined(COLORLCD)
+#if defined(COLORLCD) || defined(EEPROM_SDCARD)
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
 #define LEN_BITMAPS_EXT     4
 #else
@@ -141,6 +141,10 @@ const char * getBasename(const char * path);
   #define OTX_FOURCC 0x3778746F // otx for X10
 #elif defined(PCBX9E)
   #define OTX_FOURCC 0x3578746F // otx for Taranis X9E
+#elif defined(RADIO_TANGO)
+  #define OTX_FOURCC 0x4478746F // otx for Tango
+#elif defined(RADIO_MAMBO)
+  #define OTX_FOURCC 0x4578746F // otx for Mambo
 #elif defined(PCBXLITES)
   #define OTX_FOURCC 0x3B78746F // otx for Taranis X-Lite S
 #elif defined(PCBXLITE)

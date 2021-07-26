@@ -181,3 +181,24 @@ void storageReadAll()
   }
 }
 
+// TODO: adapt to new file/storage structure
+//
+// #if defined(EEPROM_SDCARD)
+// #include "storage/modelslist.h"
+// void checkModelIdUnique(uint8_t module)
+// {
+//   if (isModuleXJTD8(module))
+//     return;
+
+//   char * warn_buf = reusableBuffer.moduleSetup.msg;
+
+//   // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
+//   size_t warn_buf_len = sizeof(reusableBuffer.moduleSetup.msg) - WARNING_LINE_LEN - 2;
+//   if (!modelslist.isModelIdUnique(module,warn_buf,warn_buf_len)) {
+//     if (warn_buf[0] != 0) {
+//       POPUP_WARNING(STR_MODELIDUSED);
+//       SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.moduleSetup.msg), 0);
+//     }
+//   }
+// }
+// #endif

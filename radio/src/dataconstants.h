@@ -223,7 +223,6 @@ enum TrainerMode {
 #else
   #define IS_INTERNAL_MODULE_ENABLED() (false)
 #endif
-
 #define IS_EXTERNAL_MODULE_ENABLED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
 
 #if defined(HARDWARE_INTERNAL_MODULE)
@@ -246,10 +245,11 @@ enum UartModes {
   UART_MODE_MAX = UART_MODE_COUNT-1
 };
 
+#define LEN_MODEL_FILENAME             16
+
 #if defined(PCBHORUS) || defined(PCBNV14)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
-  #define LEN_MODEL_FILENAME           16
   #define LEN_BLUETOOTH_NAME           10
 #else
   #define LEN_SWITCH_NAME              3
@@ -311,8 +311,8 @@ enum TelemetryUnit {
   UNIT_MS,
   UNIT_US,
   UNIT_KM,
-  UNIT_MAX = UNIT_KM,
-  UNIT_SPARE5,
+  UNIT_DBM,
+  UNIT_MAX = UNIT_DBM,
   UNIT_SPARE6,
   UNIT_SPARE7,
   UNIT_SPARE8,

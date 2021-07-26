@@ -191,7 +191,7 @@ void onSdManagerMenu(const char * result)
     audioQueue.stopAll();
     audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
   }
-#if LCD_DEPTH > 1
+#if LCD_DEPTH > 1 && !defined(MODEL_HAVE_NO_BITMAP)
   else if (result == STR_ASSIGN_BITMAP) {
     strAppendFilename(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
@@ -203,6 +203,7 @@ void onSdManagerMenu(const char * result)
     pushMenuTextView(lfn);
   }
 #if defined(PCBTARANIS)
+#if !defined(RADIO_FAMILY_TBS)
   else if (result == STR_FLASH_BOOTLOADER) {
     getSelectionFullPath(lfn);
     BootloaderFirmwareUpdate bootloader;
@@ -224,6 +225,7 @@ void onSdManagerMenu(const char * result)
     FrskyDeviceFirmwareUpdate device(SPORT_MODULE);
     device.flashFirmware(lfn, drawProgressScreen);
   }
+#endif
 #if defined(MULTIMODULE)
 #if defined(INTERNAL_MODULE_MULTI)
   else if (result == STR_FLASH_INTERNAL_MULTI) {
@@ -299,7 +301,7 @@ void onUpdateReceiverSelection(const char * result)
 
 void menuRadioSdManager(event_t _event)
 {
-#if LCD_DEPTH > 1
+#if LCD_W >= 212
   int lastPos = menuVerticalPosition;
 #endif
 
@@ -319,7 +321,7 @@ void menuRadioSdManager(event_t _event)
   switch (_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
-#if LCD_DEPTH > 1
+#if LCD_W >= 212
       lastPos = -1;
 #endif
       // no break
@@ -329,7 +331,7 @@ void menuRadioSdManager(event_t _event)
       REFRESH_FILES();
       break;
 
-#if defined(PCBX9) || defined(RADIO_X7) || defined(RADIO_X7ACCESS) // TODO NO_MENU_KEY
+#if defined(PCBX9) || defined(RADIO_X7) || defined(RADIO_X7ACCESS)// TODO NO_MENU_KEY
     case EVT_KEY_LONG(KEY_MENU):
       if (SD_CARD_PRESENT() && !READ_ONLY() && s_editMode == 0) {
         killEvents(_event);
@@ -365,7 +367,7 @@ void menuRadioSdManager(event_t _event)
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):
-#if !defined(PCBX9) && !defined(RADIO_X7) && !defined(RADIO_X7ACCESS) // TODO NO_HEADER_LINE
+#if HEADER_LINE > 0
       if (menuVerticalPosition < HEADER_LINE) {
         killEvents(_event);
         POPUP_MENU_ADD_ITEM(STR_SD_INFO);
@@ -389,7 +391,7 @@ void menuRadioSdManager(event_t _event)
           if (!strcasecmp(ext, SOUNDS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
           }
-#if LCD_DEPTH > 1
+#if LCD_DEPTH > 1 && !defined(MODEL_HAVE_NO_BITMAP)
           else if (isExtensionMatching(ext, BITMAPS_EXT)) {
             if (!READ_ONLY() && (ext-line) <= (int)sizeof(g_model.header.bitmap)) {
               POPUP_MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
@@ -418,7 +420,7 @@ void menuRadioSdManager(event_t _event)
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_ELRS);
           }
 #endif
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(RADIO_FAMILY_TBS)
           if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
             if (isBootloader(lfn)) {
               POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
@@ -628,7 +630,7 @@ void menuRadioSdManager(event_t _event)
     }
 #endif
 
-#if LCD_DEPTH > 1
+#if LCD_W >= 212
     const char * ext = getFileExtension(reusableBuffer.sdManager.lines[index]);
     if (ext && isExtensionMatching(ext, BITMAPS_EXT)) {
       if (lastPos != menuVerticalPosition) {

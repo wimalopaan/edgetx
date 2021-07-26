@@ -22,6 +22,10 @@
 #include "modelslist.h"
 #include "conversions/conversions.h"
 
+#if defined(EEPROM_SDCARD)
+ModelHeader modelHeaders[MAX_MODELS];
+#endif
+
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
   TRACE("writeFile(%s)", filename);
@@ -127,7 +131,6 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size, u
   getModelPath(path, filename);
   return loadFile(path, buffer, size, version);
 }
-
 
 const char * loadRadioSettings(const char * path)
 {

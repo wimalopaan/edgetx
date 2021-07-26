@@ -25,6 +25,7 @@ set(PPM_LIMITS_SYMETRICAL YES)
 set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 set(ROTARY_ENCODER YES)
 set(HARDWARE_EXTERNAL_MODULE YES)
+add_definitions(-DHARDWARE_TRIMS)
 
 if(BOOTLOADER)
   set(LINKER_SCRIPT targets/horus/stm32f4_flash_bootloader.ld)

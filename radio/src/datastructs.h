@@ -753,6 +753,14 @@ PACK(struct TrainerData {
   #else
     #define BLUETOOTH_FIELDS
   #endif
+
+#if defined(EEPROM_SDCARD)
+  #define MODEL_FILE_NAME_FIELD \
+  NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]);
+#else
+  #define MODEL_FILE_NAME_FIELD
+#endif
+
   #define EXTRA_GENERAL_FIELDS \
     uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4 ARRAY(1,struct_sliderConfig,nullptr); \
@@ -762,6 +770,7 @@ PACK(struct TrainerData {
     swconfig_t switchConfig ARRAY(2,struct_switchConfig,nullptr); \
     char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME]; \
+    MODEL_FILE_NAME_FIELD \
     BLUETOOTH_FIELDS
 #else
   #define EXTRA_GENERAL_FIELDS
@@ -781,6 +790,13 @@ PACK(struct TrainerData {
   #define BUZZER_FIELD int8_t buzzerMode:2    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
 #else
   #define BUZZER_FIELD int8_t spare4:2 SKIP
+#endif
+
+#if defined(ENABLE_ROTARY_INVERSE)
+  #define ROTARY_MODE \
+    NOBACKUP(uint8_t enableRotaryInverse:1);
+#else
+  #define ROTARY_MODE
 #endif
 
 PACK(struct RadioData {
@@ -860,6 +876,26 @@ PACK(struct RadioData {
   GYRO_FIELDS
 
   NOBACKUP(int8_t   uartSampleMode:2); // See UartSampleModes
+
+  ROTARY_MODE
+
+  NOBACKUP(uint8_t getPwrOnSpeed() const
+  {
+#if defined(RADIO_FAMILY_TBS)
+    return 1 + pwrOnSpeed;
+#else
+    return 2 - pwrOnSpeed;
+#endif
+  });
+
+  NOBACKUP(uint8_t getPwrOffSpeed() const
+  {
+#if defined(RADIO_FAMILY_TBS)
+    return 1 + pwrOffSpeed;
+#else
+    return 2 - pwrOffSpeed;
+#endif
+  });
 });
 
 #undef SWITCHES_WARNING_DATA
@@ -870,6 +906,7 @@ PACK(struct RadioData {
 #undef SPLASH_MODE
 #undef EXTRA_GENERAL_FIELDS
 #undef THEME_DATA
+#undef ROTARY_MODE
 #undef NOBACKUP
 
 
@@ -970,6 +1007,12 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 859);
+  CHKSIZE(ModelData, 6157);
+#elif defined(RADIO_TANGO)
+  CHKSIZE(RadioData, 847);
+  CHKSIZE(ModelData, 6155);
+#elif defined(RADIO_MAMBO)
+  CHKSIZE(RadioData, 865);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 865);
