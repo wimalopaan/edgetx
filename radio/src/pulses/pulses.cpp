@@ -21,6 +21,7 @@
 
 #include "opentx.h"
 #include "mixer_scheduler.h"
+#include "heartbeat_driver.h"
 
 #include "io/frsky_pxx2.h"
 #include "io/multi_protolist.h"
@@ -326,13 +327,11 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 #if defined(PXX2) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-      extmoduleInvertedSerialStart(PXX2_HIGHSPEED_BAUDRATE);
-      mixerSchedulerSetPeriod(EXTERNAL_MODULE, PXX2_NO_HEARTBEAT_PERIOD);
+      Pxx2ModuleDriver.init(EXTERNAL_MODULE);
       break;
 
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
-      extmoduleInvertedSerialStart(PXX2_LOWSPEED_BAUDRATE);
-      mixerSchedulerSetPeriod(EXTERNAL_MODULE, PXX2_NO_HEARTBEAT_PERIOD);
+      Pxx2LowSpeedModuleDriver.init(EXTERNAL_MODULE);
       break;
 #endif
 
@@ -387,6 +386,10 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 bool setupPulsesExternalModule(uint8_t protocol)
 {
+  int16_t* channels =
+      &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart];
+  uint8_t nChannels = 16;  // TODO: MAX_CHANNELS - channelsStart
+
   switch (protocol) {
 
 #if defined(PXX1)
@@ -404,7 +407,7 @@ bool setupPulsesExternalModule(uint8_t protocol)
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
-      extmodulePulsesData.pxx2.setupFrame(EXTERNAL_MODULE);
+      Pxx2ModuleDriver.setupPulses((void*)EXTERNAL_MODULE, channels, nChannels);
       return true;
 #endif
 
@@ -427,9 +430,6 @@ bool setupPulsesExternalModule(uint8_t protocol)
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       if (CrossfireModuleDriver.setupPulses) {
-        int16_t* channels =
-            &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart];
-        uint8_t nChannels = 16;  // TODO: MAX_CHANNELS - channelsStart
         CrossfireModuleDriver.setupPulses((void*)EXTERNAL_MODULE, channels,
                                           nChannels);
       }
@@ -508,17 +508,9 @@ static void enablePulsesInternalModule(uint8_t protocol)
 #endif
 
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED: {
-      intmoduleFifo.clear();
-      IntmoduleSerialDriver.init(&pxx2SerialInitParams)
-      resetAccessAuthenticationCount();
-
-#if defined(INTMODULE_HEARTBEAT)
-      // use backup trigger (1 ms later)
-      init_intmodule_heartbeat();
-#endif
-      mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
-    } break;
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
+      Pxx2ModuleDriver.init(INTERNAL_MODULE);
+      break;
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
@@ -580,6 +572,10 @@ static void enablePulsesInternalModule(uint8_t protocol)
 
 bool setupPulsesInternalModule(uint8_t protocol)
 {
+  int16_t* channels =
+      &channelOutputs[g_model.moduleData[INTERNAL_MODULE].channelsStart];
+  uint8_t nChannels = 16;  // TODO: MAX_CHANNELS - channelsStart
+
   switch (protocol) {
 #if defined(HARDWARE_INTERNAL_MODULE) && defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
@@ -595,16 +591,8 @@ bool setupPulsesInternalModule(uint8_t protocol)
 
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-    {
-      bool result = intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
-      if (moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER) {
-        mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_TOOLS_PERIOD);
-      }
-      else {
-        mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
-      }
-      return result;
-    }
+      Pxx2ModuleDriver.setupPulses((void*)INTERNAL_MODULE, channels, nChannels);
+      return true;
 #endif
 
 #if defined(PCBTARANIS) && defined(INTERNAL_MODULE_PPM)
@@ -664,8 +652,7 @@ void intmoduleSendNextFrame()
   switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-      intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(),
-                          intmodulePulsesData.pxx2.getSize());
+      Pxx2ModuleDriver.sendPulses((void*)INTERNAL_MODULE);
       break;
 #endif
 
