@@ -19,31 +19,17 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MULTI_PULSES_H_
-#define _MULTI_PULSES_H_
+#pragma once
 
-#include "pulses_common.h"
+#include <stdint.h>
 #include "hal/serial_driver.h"
 
-void multiPatchCustom(uint8_t moduleIdx);
-void convertOtxProtocolToMulti(int *protocol, int *subprotocol);
-void convertMultiProtocolToOtx(int *protocol, int *subprotocol);
-
-class UartMultiPulses: public DataBuffer<uint8_t, 64>
-{
-  public:
-    void initFrame()
-    {
-      initBuffer();
-    }
-
-    void sendByte(uint8_t b)
-    {
-      if (getSize() < 64)
-         *ptr++ = b;
-    }
-};
-
-extern etx_serial_init multiSerialInitParams;
-
+#if defined(STM32F4)
+//  #include "stm32f4xx.h"
+  #include "stm32f4xx_usart.h"
+#else
+//  #include "stm32f2xx.h"
+  #include "stm32f2xx_usart.h"
 #endif
+
+void stm32_usart_init(USART_TypeDef *USARTx, const etx_serial_init* params);

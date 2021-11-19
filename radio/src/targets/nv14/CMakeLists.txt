@@ -132,6 +132,7 @@ set(TARGET_SRC
   ../horus/extmodule_driver.cpp
   trainer_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
+  ../common/arm/stm32/stm32_usart_driver.cpp
   )
 
 set(FIRMWARE_TARGET_SRC
