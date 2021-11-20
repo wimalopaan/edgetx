@@ -61,10 +61,6 @@ extern uint16_t sessionTimer;
 void boardInit();
 void boardOff();
 
-// Timers driver
-void init2MhzTimer();
-void init1msTimer();
-
 // PCBREV driver
 enum {
   // X7

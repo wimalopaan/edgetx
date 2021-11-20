@@ -605,18 +605,6 @@ void flightReset(uint8_t check=true);
   #define RESET_THR_TRACE() s_timeCum16ThrP = s_timeCumThr = 0
 #endif
 
-#if defined(SIMU)
-  uint16_t getTmr2MHz();
-  uint16_t getTmr16KHz();
-#elif defined(STM32)
-  static inline uint16_t getTmr2MHz() { return TIMER_2MHz_TIMER->CNT; }
-#elif defined(PCBSKY9X)
-  static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
-#else
-  uint16_t getTmr16KHz();
-#endif
-
-
 #if defined(SPLASH)
   void doSplash();
 #endif
