@@ -445,9 +445,10 @@ endif()
 set(TARGET_DIR taranis)
 set(PPM_LIMITS_SYMETRICAL YES)
 
-if(SPLASH STREQUAL OFF)
-  message(FATAL_ERROR "Option SPLASH=OFF not supported on Taranis")
-endif()
+set(SPLASH "OFF" CACHE STRING "Splash (DEFAULT/OFF/FRSKY)" FORCE)
+# if(SPLASH STREQUAL OFF)
+#   message(FATAL_ERROR "Option SPLASH=OFF not supported on Taranis")
+# endif()
 
 add_definitions(-DPCBTARANIS)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)

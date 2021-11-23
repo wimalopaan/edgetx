@@ -25,21 +25,21 @@
 #define ANIMATIONS_BITMAP_WIDTH       60
 #define ANIMATIONS_BITMAP_HEIGHT      60
 
-const unsigned char bmp_startup[] = {
-#include "startup.lbm"
-};
+// const unsigned char bmp_startup[] = {
+// #include "startup.lbm"
+// };
 
-const unsigned char bmp_lock[] = {
-#include "lock.lbm"
-};
+// const unsigned char bmp_lock[] = {
+// #include "lock.lbm"
+// };
 
-const unsigned char bmp_shutdown[] = {
-#include "shutdown.lbm"
-};
+// const unsigned char bmp_shutdown[] = {
+// #include "shutdown.lbm"
+// };
 
-const unsigned char bmp_sleep[] = {
-#include "sleep.lbm"
-};
+// const unsigned char bmp_sleep[] = {
+// #include "sleep.lbm"
+// };
 
 void drawStartupAnimation(uint32_t duration, uint32_t totalDuration)
 {
@@ -51,10 +51,10 @@ void drawStartupAnimation(uint32_t duration, uint32_t totalDuration)
   lcdRefreshWait();
   lcdClear();
 
-  if (index == 0)
-    lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_lock, 0, ANIMATIONS_BITMAP_WIDTH);
-  else
-    lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_startup, (index - 1) * ANIMATIONS_BITMAP_WIDTH, ANIMATIONS_BITMAP_WIDTH);
+  // if (index == 0)
+  //   lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_lock, 0, ANIMATIONS_BITMAP_WIDTH);
+  // else
+  //   lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_startup, (index - 1) * ANIMATIONS_BITMAP_WIDTH, ANIMATIONS_BITMAP_WIDTH);
 
   lcdRefresh();
 }
@@ -69,10 +69,10 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
   lcdRefreshWait();
   lcdClear();
 
-  lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_shutdown, (3 - index) * ANIMATIONS_BITMAP_WIDTH, ANIMATIONS_BITMAP_WIDTH);
-  if (message) {
-    lcdDrawText((LCD_W - getTextWidth(message)) / 2, LCD_H - 2*FH, message);
-  }
+  // lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_shutdown, (3 - index) * ANIMATIONS_BITMAP_WIDTH, ANIMATIONS_BITMAP_WIDTH);
+  // if (message) {
+  //   lcdDrawText((LCD_W - getTextWidth(message)) / 2, LCD_H - 2*FH, message);
+  // }
 
   lcdRefresh();
 }
@@ -81,7 +81,7 @@ void drawSleepBitmap()
 {
   lcdRefreshWait();
   lcdClear();
-  lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_sleep, 0);
+  // lcdDrawBitmap((LCD_W - ANIMATIONS_BITMAP_WIDTH) / 2, (LCD_H - ANIMATIONS_BITMAP_HEIGHT) / 2, bmp_sleep, 0);
   lcdRefresh();
   lcdRefreshWait();
 }
