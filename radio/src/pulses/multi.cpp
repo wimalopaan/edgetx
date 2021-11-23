@@ -267,6 +267,7 @@ static void* multiInit(uint8_t module)
 
   // mixer setup
   mixerSchedulerSetPeriod(INTERNAL_MODULE, MULTIMODULE_PERIOD);
+  INTERNAL_MODULE_ON();
 
   // reset status
   getMultiModuleStatus(INTERNAL_MODULE).failsafeChecked = false;
@@ -284,9 +285,10 @@ static void* multiInit(uint8_t module)
 static void multiDeInit(void* context)
 {
   (void)context;
+
+  INTERNAL_MODULE_OFF();
   mixerSchedulerSetPeriod(INTERNAL_MODULE, 0);
   IntmoduleSerialDriver.deinit();
-  //TODO: power OFF ???
 }
 
 static void multiSetupPulses(void* context, int16_t* channels, uint8_t nChannels)
