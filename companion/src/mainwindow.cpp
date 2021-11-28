@@ -890,13 +890,13 @@ void MainWindow::customizeSplash()
   dialog->deleteLater();
 }
 
-void MainWindow::writeEeprom()
+void MainWindow::writeSettings()
 {
   if (activeMdiChild())
-    activeMdiChild()->writeEeprom();
+    activeMdiChild()->writeSettings();
 }
 
-void MainWindow::readEeprom()
+void MainWindow::readSettings()
 {
   Board::Type board = getCurrentBoard();
   QString tempFile;
@@ -929,7 +929,7 @@ bool MainWindow::readFirmwareFromRadio(const QString & filename)
 bool MainWindow::readEepromFromRadio(const QString & filename)
 {
   ProgressDialog progressDialog(this, tr("Read Models and Settings from Radio"), CompanionIcon("read_eeprom.png"));
-  bool result = ::readEeprom(filename, progressDialog.progress());
+  bool result = ::readSettings(filename, progressDialog.progress());
   if (!result) {
     if (!progressDialog.isEmpty()) {
       progressDialog.exec();
@@ -1038,8 +1038,8 @@ void MainWindow::updateMenus()
   saveAsAct->setEnabled(activeChild);
   closeAct->setEnabled(activeChild);
   compareAct->setEnabled(activeChild);
-  writeEepromAct->setEnabled(activeChild);
-  readEepromAct->setEnabled(true);
+  writeSettingsAct->setEnabled(activeChild);
+  readSettingsAct->setEnabled(true);
   if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     writeBUToRadioAct->setEnabled(false);
     readBUToFileAct->setEnabled(false);
@@ -1192,8 +1192,8 @@ void MainWindow::retranslateUi(bool showMsg)
   trAct(sdsyncAct,          tr("Synchronize SD"),             tr("SD card synchronization"));
 
   trAct(openDocURLAct,      tr("Manuals and other Documents"),         tr("Open the EdgeTX document page in a web browser"));
-  trAct(writeEepromAct,     tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"));
-  trAct(readEepromAct,      tr("Read Models and Settings From Radio"), tr("Read Models and Settings from Radio"));
+  trAct(writeSettingsAct,   tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"));
+  trAct(readSettingsAct,    tr("Read Models and Settings From Radio"), tr("Read Models and Settings from Radio"));
   trAct(burnConfigAct,      tr("Configure Communications..."),         tr("Configure software for communicating with the Radio"));
   trAct(writeBUToRadioAct,  tr("Write Backup to Radio"),               tr("Write Backup from file to Radio"));
   trAct(readBUToFileAct,    tr("Backup Radio to File"),                tr("Save a complete backup file of all settings and model data in the Radio"));
@@ -1249,8 +1249,8 @@ void MainWindow::createActions()
   burnListAct =        addAct("list.png",              SLOT(burnList()));
   readFlashAct =       addAct("read_flash.png",        SLOT(readFlash()));
   writeFlashAct =      addAct("write_flash.png",       SLOT(writeFlash()));
-  writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
-  readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
+  writeSettingsAct =   addAct("write_eeprom.png",      SLOT(writeSettings()));
+  readSettingsAct =    addAct("read_eeprom.png",       SLOT(readSettings()));
   burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
 
   writeBUToRadioAct = addAct("write_eeprom_file.png", SLOT(writeBackup()));
@@ -1340,8 +1340,8 @@ void MainWindow::createMenus()
   settingsMenu->addAction(importSettingsAct);
 
   burnMenu = menuBar()->addMenu("");
-  burnMenu->addAction(writeEepromAct);
-  burnMenu->addAction(readEepromAct);
+  burnMenu->addAction(writeSettingsAct);
+  burnMenu->addAction(readSettingsAct);
   burnMenu->addSeparator();
   burnMenu->addAction(writeBUToRadioAct);
   burnMenu->addAction(readBUToFileAct);
@@ -1428,8 +1428,8 @@ void MainWindow::createToolBars()
   burnToolBar = new QToolBar(this);
   addToolBar( Qt::LeftToolBarArea, burnToolBar );
   burnToolBar->setObjectName("Write");
-  burnToolBar->addAction(writeEepromAct);
-  burnToolBar->addAction(readEepromAct);
+  burnToolBar->addAction(writeSettingsAct);
+  burnToolBar->addAction(readSettingsAct);
   burnToolBar->addSeparator();
   burnToolBar->addAction(writeBUToRadioAct);
   burnToolBar->addAction(readBUToFileAct);

@@ -459,6 +459,9 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case HasColorLcd:
       return IS_FAMILY_HORUS_OR_T16(board);
 
+    case HasSDCard:
+      return IS_STM32(board);
+
     default:
       return 0;
   }

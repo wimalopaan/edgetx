@@ -142,7 +142,8 @@ namespace Board {
     NumTrims,
     NumTrimSwitches,
     HasRTC,
-    HasColorLcd
+    HasColorLcd,
+    HasSDCard
   };
 
   struct SwitchInfo

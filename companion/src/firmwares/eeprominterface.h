@@ -163,7 +163,8 @@ enum Capability {
   HasADCJitterFilter,
   HasTelemetryBaudrate,
   TopBarZones,
-  HasModelList
+  Has,
+  HasModelsList
 };
 
 class EEPROMInterface
