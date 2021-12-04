@@ -26,6 +26,7 @@
 #include "radiodata.h"
 #include "../../radio/src/definitions.h"
 #include "simulatorinterface.h"
+#include "datahelpers.h"
 
 #include <QtCore>
 #include <QStringList>
@@ -286,8 +287,15 @@ class Firmware
       board(board),
       variantBase(0),
       base(base),
-      eepromInterface(nullptr)
-    { }
+      eepromInterface(nullptr),
+      analogInputNamesLookupTable(Boards::getAnalogNamesLookupTable(board))
+    {
+/*       qDebug() << "board:" << Boards::getBoardName(board);
+ *       for_each(analogInputNamesLookupTable.begin(), analogInputNamesLookupTable.end(), [=](const Int2StringMapping& row) {
+ *           qDebug() << "index:" << row.first << "value:" << row.second.c_str();
+ *         });
+ */
+    }
 
     virtual ~Firmware() { }
 
@@ -394,6 +402,11 @@ class Firmware
       currentVariant = value;
     }
 
+    const Int2StringMappingTable * getAnalogIndexNamesLookupTable()
+    {
+      return &analogInputNamesLookupTable;
+    }
+
   protected:
     QString id;
     QString name;
@@ -401,6 +414,7 @@ class Firmware
     unsigned int variantBase;
     Firmware * base;
     EEPROMInterface * eepromInterface;
+    const Int2StringMappingTable analogInputNamesLookupTable;
     QList<const char *> languages;
     //QList<const char *> ttslanguages;
     OptionsList opts;
@@ -408,6 +422,7 @@ class Firmware
     static QVector<Firmware *> registeredFirmwares;
     static Firmware * defaultVariant;
     static Firmware * currentVariant;
+
 };
 
 inline Firmware * getCurrentFirmware()
