@@ -25,6 +25,9 @@
 #include "definitions.h"
 #include "opentx_types.h"
 
+#include <array>
+#include <cassert>
+
 #define SHOW_TIME  0x1
 #define SHOW_TIMER 0x0
 #define SHOW_TIMER_UPPER_CASE   0x2
@@ -89,5 +92,85 @@ char *getCurveString(int idx);
 char *getTimerString(int32_t tme, TimerOptions timerOptions = {.options = 0});
 void splitTimer(char *s0, char *s1, char *s2, char *s3, int tme,
                 bool bLowercase = true);
+
+template<typename C, size_t L>
+struct LString {
+    constexpr LString(const C* const p) : ptr{p} {} // should be consteval
+    constexpr C operator[](const size_t i) const {
+        return *(ptr + i);
+    }
+private:
+    const C* const ptr{};
+};
+
+template<typename C>
+struct size;
+template<typename E, size_t N>
+struct size<E[N]> {
+    static constexpr size_t value = N;
+};
+template<typename C, size_t N>
+struct size<LString<C, N>> {
+    static constexpr size_t value = N;            
+};
+
+template<typename C, typename... CC>
+struct totalsize {
+    static constexpr size_t value = size<C>::value + totalsize<CC...>::value;  
+};
+template<typename C>
+struct totalsize<C> {
+    static constexpr size_t value = size<C>::value;  
+};
+
+template<typename E, size_t N>
+constexpr LString<E, N - 1> lstring(const E(&a)[N]) { // should be consteval
+    static_assert(N >= 1);
+    return LString<E, N - 1>(a);
+}
+
+#define LStr(s) lstring(s)
+
+template<typename O, typename C>
+void insert(O& out, size_t& index, const C& c) {
+    for(size_t i = 0; i < size<C>::value; ++i, ++index) {
+        if (c[i] != '\0') {
+            out[index] = c[i];
+        }
+        else {
+            break;
+        }
+    }    
+}
+template<typename O, typename C, typename... CC>
+void insert(O& out, size_t& index, const C& c, const CC&... cc) {
+    insert(out, index, c);    
+    insert(out, index, cc...);    
+}
+
+struct AlwaysNullTerminated {};
+struct MaybeNullTerminated {};
+
+template<typename... C>
+constexpr auto concat(MaybeNullTerminated, const C& ... c) -> std::array<char, totalsize<C...>::value> {
+    constexpr size_t length = totalsize<C...>::value;
+    std::array<char, length> result; 
+    size_t index{0};
+    insert(result, index, c...);
+    if (index < length) {
+        result[index] = '\0';
+    }
+    return result;
+}
+
+template<typename... C>
+constexpr auto concat(AlwaysNullTerminated, const C& ... c) -> std::array<char, totalsize<C...>::value + 1> {
+    constexpr size_t length = totalsize<C...>::value + 1;
+    std::array<char, length> result; 
+    size_t index{0};
+    insert(result, index, c...);
+    result[index] = '\0';
+    return result;
+}
 
 #endif  // _STRHELPERS_H_

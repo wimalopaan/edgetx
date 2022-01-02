@@ -817,4 +817,5 @@ char *getSwitchPositionName(swsrc_t idx)
 }
 
 char *getGVarString(int idx) { return getGVarString(tmpHelpersString, idx); }
+
 #endif

@@ -625,12 +625,14 @@ static bool luaLoadMixScript(uint8_t ref)
     ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
     sid.reference = ref;
 
-    char filename[sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME + sizeof(SCRIPT_EXT)] = SCRIPTS_MIXES_PATH "/";
-    strncpy(filename + sizeof(SCRIPTS_MIXES_PATH), sd.file, LEN_SCRIPT_FILENAME);
-    filename[sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME] = '\0';
-    strcat(filename + sizeof(SCRIPTS_MIXES_PATH), SCRIPT_EXT);
-
-    return luaLoad(filename, sid);
+    auto filename = concat(AlwaysNullTerminated{}, LStr(SCRIPTS_MIXES_PATH), LStr(PATH_SEPARATOR), sd.file, LStr(SCRIPT_EXT));
+    return luaLoad(&filename[0], sid);
+    
+//    char filename[sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME + sizeof(SCRIPT_EXT)] = SCRIPTS_MIXES_PATH "/";
+//    strncpy(filename + sizeof(SCRIPTS_MIXES_PATH), sd.file, LEN_SCRIPT_FILENAME);
+//    filename[sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME] = '\0';
+//    strcat(filename + sizeof(SCRIPTS_MIXES_PATH), SCRIPT_EXT);
+//    return luaLoad(filename, sid);
   }
   return false;
 }
