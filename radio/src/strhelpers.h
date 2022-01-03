@@ -93,6 +93,101 @@ char *getTimerString(int32_t tme, TimerOptions timerOptions = {.options = 0});
 void splitTimer(char *s0, char *s1, char *s2, char *s3, int tme,
                 bool bLowercase = true);
 
+#if (__cplusplus >= 201707L)
+
+template<typename C, size_t L>
+struct LString {
+    consteval LString(const C* const p) : ptr{p} {} // immdiate-function: only for string-literals
+    constexpr C operator[](const size_t i) const {
+        assert(i < L);
+        return *(ptr + i);
+    }
+private:
+    const C* ptr{};
+};
+
+namespace detail {
+    template<typename C>
+    struct size;
+    template<typename E, size_t N>
+    struct size<E[N]> {
+        static inline constexpr size_t value = N;
+    };
+    template<typename C, size_t N>
+    struct size<LString<C, N>> {
+        static inline constexpr size_t value = N;            
+    };
+    
+    template<typename T, typename... TT>
+    struct front {
+        using type = T;
+    };
+    
+    template<typename C>
+    struct item_type;
+    template<typename E, size_t N>
+    struct item_type<E[N]> {
+        using type = E;   
+    };
+    template<typename E, size_t N>
+    struct item_type<LString<E, N>> {
+        using type = E;   
+    };        
+}    
+template<typename C>
+constexpr auto size_v = detail::size<C>::value;
+
+template<typename C>
+using item_type_t = detail::item_type<C>::type;
+
+template<typename... TT>
+using front = detail::front<TT...>::type;
+
+struct AlwaysNullTerminated {
+    static inline constexpr size_t addToLength{1};
+};
+struct MaybeNullTerminated {
+    static inline constexpr size_t addToLength{0};    
+};
+
+template<typename Term, typename... C>
+constexpr auto concat(Term, const C&...  c) {
+    constexpr size_t length = (size_v<C> + ...) + Term::addToLength;
+    
+    using item_type = std::remove_cvref_t<item_type_t<front<C...>>>;
+    static_assert((std::is_same_v<item_type, std::remove_cvref_t<item_type_t<C>>> && ...));
+    
+    using result_t = std::array<item_type, length>;
+    result_t result;
+   
+    size_t index{0};
+    auto insert = [&]<typename CC>(const CC& c) {
+                  for(size_t i = 0; i < size_v<CC>; ++i, ++index) {
+                    if (c[i] != '\0') {
+                        assert(index < length);
+                        result[index] = c[i];
+                    }
+                    else {
+                        break;
+                    }
+                }
+            };
+     (insert(c), ...);        
+     if (index < length) {
+          result[index] = '\0';
+     }
+     return result;
+}    
+
+template<typename E, size_t N>
+consteval auto lstring(const E(&a)[N]) { // immediate function at compile-time
+    static_assert(N >= 1);
+    return LString<E, N - 1>(a);
+}
+#define LStr(s) lstring(s)
+
+
+#else
 template<typename C, size_t L>
 struct LString {
     constexpr LString(const C* const p) : ptr{p} {} // should be consteval
@@ -172,5 +267,6 @@ constexpr auto concat(AlwaysNullTerminated, const C& ... c) -> std::array<char, 
     result[index] = '\0';
     return result;
 }
+#endif
 
 #endif  // _STRHELPERS_H_

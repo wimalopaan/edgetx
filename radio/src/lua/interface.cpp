@@ -21,6 +21,8 @@
 
 /** @file Main interface layer handler for Lua API. */
 
+#define USE_TMP 
+
 #include <ctype.h>
 #include <stdio.h>
 #include <algorithm>
@@ -624,9 +626,16 @@ static bool luaLoadMixScript(uint8_t ref)
   if (ZEXIST(sd.file)) {
     ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
     sid.reference = ref;
-
+    
+#ifdef USE_TMP
     auto filename = concat(AlwaysNullTerminated{}, LStr(SCRIPTS_MIXES_PATH), LStr(PATH_SEPARATOR), sd.file, LStr(SCRIPT_EXT));
     return luaLoad(&filename[0], sid);
+#else 
+    constexpr size_t maxlen{sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME + sizeof(SCRIPT_EXT)};
+    char filename[maxlen];
+    snprintf(filename, maxlen, "%s/%.*s%s", SCRIPTS_MIXES_PATH, LEN_SCRIPT_FILENAME, sd.file, SCRIPT_EXT);
+    return luaLoad(&filename[0], sid);
+#endif
     
 //    char filename[sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME + sizeof(SCRIPT_EXT)] = SCRIPTS_MIXES_PATH "/";
 //    strncpy(filename + sizeof(SCRIPTS_MIXES_PATH), sd.file, LEN_SCRIPT_FILENAME);
@@ -659,12 +668,22 @@ static bool luaLoadFunctionScript(uint8_t ref)
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
       sid.reference = ref;
      
-      char filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME + sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
-      strncpy(filename + sizeof(SCRIPTS_FUNCS_PATH), fn->play.name, LEN_FUNCTION_NAME);
-      filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME] = '\0';
-      strcat(filename + sizeof(SCRIPTS_FUNCS_PATH), SCRIPT_EXT);
+#ifdef USE_TMP
+    auto filename = concat(AlwaysNullTerminated{}, LStr(SCRIPTS_FUNCS_PATH), LStr(PATH_SEPARATOR), fn->play.name, LStr(SCRIPT_EXT));
+    return luaLoad(&filename[0], sid);
+#else 
+    constexpr size_t maxlen{sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME + sizeof(SCRIPT_EXT)};
+    char filename[maxlen];
+    snprintf(filename, maxlen, "%s/%.*s%s", SCRIPTS_FUNCS_PATH, LEN_FUNCTION_NAME, fn->play.name, SCRIPT_EXT);
+    return luaLoad(&filename[0], sid);
+#endif
 
-      return luaLoad(filename, sid);
+//    char filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME + sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
+//      strncpy(filename + sizeof(SCRIPTS_FUNCS_PATH), fn->play.name, LEN_FUNCTION_NAME);
+//      filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME] = '\0';
+//      strcat(filename + sizeof(SCRIPTS_FUNCS_PATH), SCRIPT_EXT);
+
+//      return luaLoad(filename, sid);
     }
     else {
       POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);

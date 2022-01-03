@@ -348,6 +348,7 @@ struct CustomFunctionsContext {
 #include "gui.h"
 
 #if !defined(SIMU)
+  #undef assert
   #define assert(x)
   #if !defined(DEBUG)
     #define printf printf_not_allowed
