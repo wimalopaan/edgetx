@@ -184,10 +184,12 @@ consteval auto lstring(const E(&a)[N]) { // immediate function at compile-time
     static_assert(N >= 1);
     return LString<E, N - 1>(a);
 }
+
 #define LStr(s) lstring(s)
 
 
-#else
+#else // C++17
+
 template<typename C, size_t L>
 struct LString {
     constexpr LString(const C* const p) : ptr{p} {} // should be consteval
@@ -267,6 +269,7 @@ constexpr auto concat(AlwaysNullTerminated, const C& ... c) -> std::array<char, 
     result[index] = '\0';
     return result;
 }
-#endif
+
+#endif // <C++17
 
 #endif  // _STRHELPERS_H_
