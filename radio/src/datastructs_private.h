@@ -29,6 +29,8 @@
 #include "opentx_types.h"
 #include "globals.h"
 
+#include <array>
+
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
   #define TARANIS_FIELD(x) x;
@@ -260,8 +262,10 @@ union ScriptDataInput {
   source_t source CUST(r_mixSrcRaw,w_mixSrcRaw);
 } FUNC(select_script_input);
 
+using t1 = std::array<char, LEN_SCRIPT_FILENAME>;
 PACK(struct ScriptData {
-  char            file[LEN_SCRIPT_FILENAME];
+  t1 file;
+//  char            file[LEN_SCRIPT_FILENAME];
   char            name[LEN_SCRIPT_NAME];
   ScriptDataInput inputs[MAX_SCRIPT_INPUTS];
 });

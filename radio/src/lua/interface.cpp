@@ -928,7 +928,7 @@ static void luaLoadScripts(bool init, const char * filename = nullptr)
             sid.background = luaRegisterFunction("background");
             initFunction = luaRegisterFunction("init");
             if (sid.run == LUA_NOREF) {
-              snprintf(lua_warning_info, LUA_WARNING_INFO_LEN, "luaLoadScripts(%s): No run function\n", getScriptName(idx));
+              snprintf(lua_warning_info, LUA_WARNING_INFO_LEN, "luaLoadScripts(%s): No run function\n", kgetScriptName(idx));
               sid.state = SCRIPT_SYNTAX_ERROR;
               initFunction = LUA_NOREF;
             }
