@@ -31,6 +31,12 @@
   #include "view_text.h"
 #endif
 
+#ifdef AUX_SERIAL
+#warning "AUX********"
+#endif
+#ifdef DEBUG
+#warning "DEBUG********"
+#endif
 
 extern uint16_t get_flysky_hall_adc_value(uint8_t ch);
 

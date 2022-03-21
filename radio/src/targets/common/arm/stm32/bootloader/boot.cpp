@@ -256,6 +256,13 @@ int main()
 
   TRACE("\nBootloader started :)");
 
+#ifdef AUX_SERIAL
+#warning "AUX********"
+#endif 
+#ifdef DEBUG
+#warning "DEBUG********"
+#endif
+  
   lcdInit();
   backlightInit();
   backlightEnable();
