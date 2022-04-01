@@ -476,6 +476,9 @@ set(SRC
   model_init.cpp
   serial.cpp
   sbus.cpp
+  ibus.cpp
+  crsf.cpp
+  sumd.cpp
   )
 
 if(GUI)

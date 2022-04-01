@@ -115,7 +115,7 @@ static SerialPortState* getSerialPortState(uint8_t port_nr)
 static void serialSetCallBacks(int mode, void* ctx, const etx_serial_port_t* port)
 {
   void (*sendByte)(void*, uint8_t) = nullptr;
-  int (*getByte)(void*, uint8_t*) = nullptr;
+  bool (*getByte)(void*, uint8_t*) = nullptr;
   void (*setRxCb)(void*, void (*)(uint8_t*, uint32_t)) = nullptr;
 
   const etx_serial_driver_t* drv = nullptr;
@@ -158,8 +158,12 @@ static void serialSetCallBacks(int mode, void* ctx, const etx_serial_port_t* por
 
 #if defined(SBUS_TRAINER)
   case UART_MODE_SBUS_TRAINER:
+  case UART_MODE_IBUS_TRAINER:
+  case UART_MODE_CRSF_TRAINER:
+  case UART_MODE_SUMD_TRAINER:
     sbusSetAuxGetByte(ctx, getByte);
     // TODO: setRxCb (see MODE_LUA)
+    break;
     break;
 #endif
 
@@ -226,6 +230,33 @@ static void serialSetupPort(int mode, etx_serial_init& params, bool& power_requi
     params.word_length = ETX_WordLength_9;
     params.parity = ETX_Parity_Even;
     params.stop_bits = ETX_StopBits_Two;
+    params.rx_enable = true;
+    power_required = true;
+    break;
+
+  case UART_MODE_IBUS_TRAINER:
+    params.baudrate = IBUS_BAUDRATE;
+    params.word_length = ETX_WordLength_8;
+    params.parity = ETX_Parity_None;
+    params.stop_bits = ETX_StopBits_One;
+    params.rx_enable = true;
+    power_required = true;
+    break;
+
+  case UART_MODE_CRSF_TRAINER:
+    params.baudrate = CRSF_BAUDRATE;
+    params.word_length = ETX_WordLength_8;
+    params.parity = ETX_Parity_None;
+    params.stop_bits = ETX_StopBits_One;
+    params.rx_enable = true;
+    power_required = true;
+    break;
+    
+  case UART_MODE_SUMD_TRAINER:
+    params.baudrate = SUMD_BAUDRATE;
+    params.word_length = ETX_WordLength_8;
+    params.parity = ETX_Parity_None;
+    params.stop_bits = ETX_StopBits_One;
     params.rx_enable = true;
     power_required = true;
     break;

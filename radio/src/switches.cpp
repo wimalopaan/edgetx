@@ -929,7 +929,7 @@ void logicalSwitchesTimerTick()
                     lastValue.state = 1;
                   }
                 }
-            }
+          }
         }
       }
       else if (ls->func == LS_FUNC_EDGE) {
@@ -1018,4 +1018,8 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * ls)
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst)
 {
   lswFm[dst] = lswFm[src];
+}
+
+void rawSetUnconnectedStickySwitch(const uint8_t, const bool) {
+    
 }

@@ -90,7 +90,18 @@ void execMixerFrequentActions()
 {
 #if defined(SBUS_TRAINER)
   // SBUS trainer
-  processSbusInput();
+    if (hasSerialMode(UART_MODE_SBUS_TRAINER) >= 0) {
+        processSbusInput();
+    }
+    else if (hasSerialMode(UART_MODE_IBUS_TRAINER) >= 0) {
+        processIbusInput();
+    }
+    else if (hasSerialMode(UART_MODE_CRSF_TRAINER) >= 0) {
+        processCrsfInput();
+    }
+    else if (hasSerialMode(UART_MODE_SUMD_TRAINER) >= 0) {
+        processSumdInput();
+    }
 #endif
 
 #if defined(GYRO)
