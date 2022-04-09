@@ -523,7 +523,7 @@
 #define TR_PWR_ON_DELAY                "Pwr On delay"
 #define TR_PWR_OFF_DELAY               "Pwr Off delay"
 #define TR_THROTTLE_WARNING             TR("Gasalarm", INDENT "Gas Alarm")
-#define TR_CUSTOM_THROTTLE_WARNING     TR(INDENT INDENT INDENT INDENT "Cust-Pos", INDENT INDENT INDENT INDENT "Custom position?")
+#define TR_CUSTOM_THROTTLE_WARNING     TR(INDENT INDENT INDENT INDENT "Eig-Pos", INDENT INDENT INDENT INDENT "Eigene Position?")
 #define TR_CUSTOM_THROTTLE_WARNING_VAL TR("Pos. %", "Position %")
 #define TR_SWITCHWARNING               TR("Sch. Alarm", INDENT "Schalter-Alarm")
 #define TR_POTWARNINGSTATE             TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
@@ -615,8 +615,8 @@
 #define TR_MENUFLIGHTMODES   		   "PHASEN"
 #define TR_MENUHELISETUP               TR("HELI TS-Mischer", "HELI TS-Mischer CYC1-3")
 
-  #define TR_MENUINPUTS                "INPUTS"  //"Inputs=Geber"
-  #define TR_MENULIMITS                "SERVOS"  //"AUSGABEN" oder "Servos"
+  #define TR_MENUINPUTS                "(VIRT.) GEBER"  //"Inputs=Geber"
+  #define TR_MENULIMITS                "AUSGABEN"  //"AUSGABEN" oder "Servos"
 #define TR_MENUCURVES                  "KURVEN"
 #define TR_MENUCURVE                   "KURVE"
 #define TR_MENULOGICALSWITCH           "LOGIKSCHALTER"
