@@ -23,9 +23,24 @@
 #include "i2c_driver.h"
 #include "tp_gt911.h"
 
+// this code contains workaround:
+// the coordinate reversal for X12S should be done in gt911 (see GT911_COOR_CONFIG_VALUE),
+// but a new config can only be written if new config number is larger than the one read from gt911,
+// config number cannot be reset according to gt911 datasheet
+// the workaround:
+// this code imply checks if register GT911_COOR_CONFIG_VALUE contains the correct value, 
+// and if not does the reversal in this driver instead inside the gt911
+// this allows to use a used display (wrong config) (use a display of TX16S inside a X12S oder vice versa)
+
+#if defined(PCBX12S)
+# define  GT911_COOR_CONFIG_VALUE 0xFC // 0x804D Module switch 1 : bit4= xy change Int mode, X12S needs axis reversal
+#else
+# define  GT911_COOR_CONFIG_VALUE 0x3C // 0x804D Module switch 1 : bit4= xy change Int mode
+#endif
+
 #if defined (RADIO_T18)
 const uint8_t TOUCH_GT911_Cfg[] = {
-    GT911_CFG_NUMER,  // 0x8047 Config version
+    GT911_CFG_NUMBER,  // 0x8047 Config version
     0xE0,             // 0x8048 X output map : x 480
     0x01,
     0x10,  // 0x804A Y ouptut max : y 272
@@ -216,13 +231,13 @@ const uint8_t TOUCH_GT911_Cfg[] = {
 //GT911 param table
 const uint8_t TOUCH_GT911_Cfg[] =
   {
-    GT911_CFG_NUMER,     // 0x8047 Config version
+    GT911_CFG_NUMBER,     // 0x8047 Config version
     0xE0,                // 0x8048 X output map : x 480
     0x01,
     0x10,                // 0x804A Y ouptut max : y 272
     0x01,
     GT911_MAX_TP,        // 0x804C Touch number
-    0x3C,                // 0x804D Module switch 1 : bit4= xy change Int mode
+    GT911_COOR_CONFIG_VALUE,
     0x20,                // 0x804E Module switch 2
     0x22,                // 0x804F Shake_Count
     0x0A,                // 0x8050 Filter
@@ -404,17 +419,20 @@ const uint8_t TOUCH_GT911_Cfg[] =
 
 #endif
 
+static bool reverseCoordinates = false;
+
 bool touchGT911Flag = false;
 volatile static bool touchEventOccured = false;
 struct TouchData touchData;
 uint16_t touchGT911fwver = 0;
 uint32_t touchGT911hiccups = 0;
-tmr10ms_t downTime = 0;
-tmr10ms_t tapTime = 0;
-short tapCount = 0;
+static tmr10ms_t downTime = 0;
+static tmr10ms_t tapTime = 0;
+static short tapCount = 0;
+
 #define TAP_TIME 25
 
-I2C_HandleTypeDef hi2c1;
+static I2C_HandleTypeDef hi2c1;
 
 static TouchState internalTouchState = {};
 
@@ -564,7 +582,7 @@ bool I2C_GT911_ReadRegister(uint16_t reg, uint8_t * buf, uint8_t len)
     return true;
 }
 
-bool I2C_GT911_SendConfig(void)
+bool I2C_GT911_SendConfig()
 {
   uint8_t buf[2];
   uint8_t i = 0;
@@ -572,17 +590,18 @@ bool I2C_GT911_SendConfig(void)
   buf[1] = 1;
   bool bResult = true;
 
-  for (i = 0; i < sizeof(TOUCH_GT911_Cfg); i++)
-    buf[0] += TOUCH_GT911_Cfg[i];//check sum
-
+  for (i = 0; i < sizeof(TOUCH_GT911_Cfg); i++) {
+    buf[0] += TOUCH_GT911_Cfg[i]; //check sum
+  }
+  
   buf[0] = (~buf[0]) + 1;
-  if (!I2C_GT911_WriteRegister(GT_CFGS_REG, (uint8_t *) TOUCH_GT911_Cfg, sizeof(TOUCH_GT911_Cfg)))
+  if (!I2C_GT911_WriteRegister(GT911_CONFIG_REG, (uint8_t *) TOUCH_GT911_Cfg, sizeof(TOUCH_GT911_Cfg)))
   {
     TRACE("GT911 ERROR: write config failed");
     bResult = false;
   }
 
-  if (!I2C_GT911_WriteRegister(GT_CHECK_REG, buf, 2)) //write checksum
+  if (!I2C_GT911_WriteRegister(GT911_CONFIG_CHECKSUM_REG, buf, 2)) //write checksum and config_fresh
   {
     TRACE("GT911 ERROR: write config checksum failed");
     bResult = false;
@@ -625,7 +644,7 @@ bool touchPanelInit(void)
     delay_ms(50);
 
     TRACE("Reading Touch registry");
-    if (!I2C_GT911_ReadRegister(GT_PID_REG, tmp, 4))
+    if (!I2C_GT911_ReadRegister(GT911_PRODUCT_ID_REG, tmp, 4))
     {
       TRACE("GT911 ERROR: Product ID read failed");
     }
@@ -634,25 +653,36 @@ bool touchPanelInit(void)
     {
       TRACE("GT911 chip detected");
       tmp[0] = 0X02;
-      if (!I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1))
+      if (!I2C_GT911_WriteRegister(GT911_COMMAND_REG, tmp, 1))
       {
-        TRACE("GT911 ERROR: write to control register failed");
+        TRACE("GT911 ERROR: write to command register failed");
       }
-      if (!I2C_GT911_ReadRegister(GT_CFGS_REG, tmp, 1))
+      if (!I2C_GT911_ReadRegister(GT911_CONFIG_REG, tmp, 1))
       {
           TRACE("GT911 ERROR: configuration register read failed");
       }
 
       TRACE("Chip config Ver:%x", tmp[0]);
-      if (tmp[0] < GT911_CFG_NUMER)  //Config ver
+      if (tmp[0] < GT911_CFG_NUMBER)  //Config ver
       {
-        TRACE("Sending new config %d", GT911_CFG_NUMER);
+        TRACE("Sending new config %d", GT911_CFG_NUMBER);
         if (!I2C_GT911_SendConfig())
         {
           TRACE("GT911 ERROR: sending configration failed");
         }
       }
 
+      // workaround: cannot reset config number
+      if (!I2C_GT911_ReadRegister(GT911_COORDINATE_REG, tmp, 1))
+      {
+        TRACE("GT911 ERROR: reading coordinate register failed");
+      }
+      else {
+          if (tmp[0] != GT911_COOR_CONFIG_VALUE) {
+              reverseCoordinates = true;
+          }
+      }
+      
       if (!I2C_GT911_ReadRegister(GT911_FIRMWARE_VERSION_REG, tmp, 2))
       {
         TRACE("GT911 ERROR: reading firmware version failed");
@@ -665,14 +695,13 @@ bool touchPanelInit(void)
 
       delay_ms(10);
       tmp[0] = 0X00;
-      if (!I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1))  //end reset
+      if (!I2C_GT911_WriteRegister(GT911_COMMAND_REG, tmp, 1))  //end reset
       {
-        TRACE("GT911 ERROR: write to control register failed");
+        TRACE("GT911 ERROR: write to command register failed");
       }
       touchGT911Flag = true;
 
       TOUCH_AF_ExtiConfig();
-
 
       return true;
     }
@@ -763,6 +792,13 @@ struct TouchState touchPanelRead()
             TRACE("I2C B1 ReInit failed");
         return internalTouchState;
       }
+      
+      // workaround
+      if (reverseCoordinates) {
+          touchData.points[0].x = LCD_W - touchData.points[0].x;
+          touchData.points[0].y = LCD_H - touchData.points[0].y;
+      }
+
       if (internalTouchState.event == TE_NONE || internalTouchState.event == TE_UP ||
           internalTouchState.event == TE_SLIDE_END) {
         internalTouchState.event = TE_DOWN;
