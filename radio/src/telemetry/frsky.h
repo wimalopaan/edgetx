@@ -87,6 +87,12 @@ enum FrSkyDataState {
 #define ACCEL_Y_ID                0x25
 #define ACCEL_Z_ID                0x26
 #define CURRENT_ID                0x28
+#define DIY1_ID                   0x2A
+#define DIY2_ID                   0x2B
+#define DIY3_ID                   0x2C
+#define DIY4_ID                   0x2D
+#define DIY5_ID                   0x2E
+#define DIY6_ID                   0x2F
 #define VARIO_ID                  0x30
 #define VFAS_ID                   0x39
 #define VOLTS_BP_ID               0x3A
@@ -275,6 +281,8 @@ typedef enum {
 // FrSky D Telemetry Protocol
 void processHubPacket(uint8_t id, int16_t value);
 void frskyDProcessPacket(const uint8_t *packet);
+void processFrskyInput();
+void frskyDSetGetByte(void* ctx, bool (*fct)(void*, uint8_t*));
 
 // FrSky S.PORT Telemetry Protocol
 bool sportProcessTelemetryPacket(const uint8_t * packet);
