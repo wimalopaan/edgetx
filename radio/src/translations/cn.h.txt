@@ -63,7 +63,7 @@
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
 
 #define LEN_AUX_SERIAL_MODES           "\010"
-#define TR_AUX_SERIAL_MODES            "调试\0   " "回传镜像" "回传输入" "SBUS教练" "IBUS教练""CRSF教练""SUMD教练" "LUA脚本\0""CLI\0     ""GPS\0     ""Debug\0   "
+#define TR_AUX_SERIAL_MODES            "调试\0   " "回传镜像" "回传输入" "FrSkyDIn" "SBUS教练" "IBUS教练""CRSF教练""SUMD教练" "LUA脚本\0""CLI\0     ""GPS\0     ""Debug\0   "
 
 #define LEN_SWTYPES                    "\004"
 #define TR_SWTYPES                     "无\0 " "回弹" "2段\0""3段\0"
@@ -1318,9 +1318,9 @@
 
 #define TR_ADD_ALL_TRIMS_TO_SUBTRIMS  "将所有微调导入中点偏移值"
 #if LCD_W > LCD_H
-  #define TR_OPEN_CHANNEL_MONITORS        "Open Channel Monitor" 
+  #define TR_OPEN_CHANNEL_MONITORS        "打开通道监视器" 
 #else
-  #define TR_OPEN_CHANNEL_MONITORS        "Open Channel Mon." 
+  #define TR_OPEN_CHANNEL_MONITORS        "通道监视" 
 #endif
 #define TR_DUPLICATE                  "复制"
 #define TR_ACTIVATE                   "启用"

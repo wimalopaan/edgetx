@@ -171,6 +171,10 @@ static void serialSetCallBacks(int mode, void* ctx, const etx_serial_port_t* por
     //       de we really need telemetry
     //       input over USB VCP?
     break;
+    
+  case UART_MODE_FRSKY_D_TELEMETRY:
+      frskyDSetGetByte(ctx, getByte);
+      break;
 
   case UART_MODE_TELEMETRY_MIRROR:
     telemetrySetMirrorCb(ctx, sendByte);
@@ -222,6 +226,15 @@ static void serialSetupPort(int mode, etx_serial_init& params, bool& power_requi
       power_required = true;
     }
     break;
+    
+  case UART_MODE_FRSKY_D_TELEMETRY:
+      params.baudrate = FRSKY_D_BAUDRATE;
+      params.word_length = ETX_WordLength_8;
+      params.parity = ETX_Parity_None;
+      params.stop_bits = ETX_StopBits_One;
+      params.rx_enable = true;
+      power_required = true;
+      break;
 
   case UART_MODE_SBUS_TRAINER:
     params.baudrate = SBus::baudrate;
