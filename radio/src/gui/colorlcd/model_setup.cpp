@@ -1349,7 +1349,7 @@ ModelSetupPage::ModelSetupPage() :
 {
 }
 
-const char * STR_TIMER_MODES[] = {"OFF", "ON", "Start", "Throttle", "Throttle %", "Throttle Start"};
+const char * STR_TIMER_MODES[] = {"Aus", "Ein", "Start", "Gas", "Gas %", "Gas Start"};
 
 const char MODEL_NAME_EXTRA_CHARS[] = "_-.,:;<=>";
 
@@ -1465,7 +1465,7 @@ void ModelSetupPage::build(FormWindow * window)
 
   // Display trims
   new StaticText(window, grid.getLabelSlot(), STR_DISPLAY_TRIMS, 0, COLOR_THEME_PRIMARY1);
-  new Choice(window, grid.getFieldSlot(), "\006No\0   ChangeYes", 0, 2, GET_SET_DEFAULT(g_model.displayTrims));
+  new Choice(window, grid.getFieldSlot(), "\006Nein\0 SchiebJa", 0, 2, GET_SET_DEFAULT(g_model.displayTrims));
   grid.nextLine();
 
   // Trim step
@@ -1566,7 +1566,7 @@ void ModelSetupPage::build(FormWindow * window)
 #if NUM_POTS + NUM_SLIDERS
     {
       new StaticText(window, grid.getLabelSlot(true), STR_POTWARNINGSTATE, 0, COLOR_THEME_PRIMARY1);
-      new Choice(window, grid.getFieldSlot(), {"OFF", "ON", "AUTO"}, 0, 2,
+      new Choice(window, grid.getFieldSlot(), {"Aus", "Ein", "AUTO"}, 0, 2,
                  GET_SET_DEFAULT(g_model.potsWarnMode));
       grid.nextLine();
 
