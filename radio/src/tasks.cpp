@@ -105,7 +105,8 @@ void execMixerFrequentActions()
     }
     else if (hasSerialMode(UART_MODE_SUMD_TRAINER) >= 0) {
         processSumdInput();
-    }   
+    }
+    
     if (hasSerialMode(UART_MODE_FRSKY_D_TELEMETRY) >= 0) {
         processFrskyInput();
     }
