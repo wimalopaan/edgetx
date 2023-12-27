@@ -57,7 +57,15 @@ const CrossfireSensor crossfireSensors[] = {
   CS(FLIGHT_MODE_ID, 0, STR_SENSOR_FLIGHT_MODE,   UNIT_TEXT,              0),
   CS(CF_VARIO_ID,    0, STR_SENSOR_VSPD,          UNIT_METERS_PER_SECOND, 2),
   CS(BARO_ALT_ID,    0, STR_SENSOR_ALT,           UNIT_METERS,            2),
-  CS(0,              0, "UNKNOWN",                UNIT_RAW,               0),
+  CS(RPM1_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
+  CS(RPM2_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
+  CS(RPM3_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
+  CS(RPM4_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
+  CS(TEMP1_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
+  CS(TEMP2_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
+  CS(TEMP3_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
+  CS(TEMP4_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
+  CS(0,              0, "UNKNOWN",          UNIT_RAW,               0),
 };
 // clang-format on
 
@@ -83,6 +91,8 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
     return crossfireSensors[FLIGHT_MODE_INDEX];
   else if (id == BARO_ALT_ID)
     return crossfireSensors[BARO_ALTITUDE_INDEX];
+  else if (id == RPM_CRSF_ID)
+    return crossfireSensors[RPM_INDEX];
   else
     return crossfireSensors[UNKNOWN_INDEX];
 }
@@ -165,6 +175,11 @@ void processCrossfireTelemetryFrame(uint8_t module, uint8_t* rxBuffer,
           getCrossfireTelemetryValue<2>(5, value, rxBuffer))
         processCrossfireTelemetryValue(VERTICAL_SPEED_INDEX, value);
       break;
+  case RPM_CRSF_ID:
+    if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+        processCrossfireTelemetryValue(RPM_INDEX, value);
+    }
+  break;
 
     case LINK_ID:
       for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
