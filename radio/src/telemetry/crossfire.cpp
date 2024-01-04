@@ -58,13 +58,13 @@ const CrossfireSensor crossfireSensors[] = {
   CS(CF_VARIO_ID,    0, STR_SENSOR_VSPD,          UNIT_METERS_PER_SECOND, 2),
   CS(BARO_ALT_ID,    0, STR_SENSOR_ALT,           UNIT_METERS,            2),
   CS(RPM1_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
-  CS(RPM2_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
+  CS(RPM2_CRSF_ID,    0, STR_SENSOR_RPM2,           UNIT_RAW,               0),
   CS(RPM3_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
-  CS(RPM4_CRSF_ID,    0, STR_SENSOR_RPM,           UNIT_RAW,               0),
+  CS(RPM4_CRSF_ID,    0, STR_SENSOR_RPM2,           UNIT_RAW,               0),
   CS(TEMP1_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
-  CS(TEMP2_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
-  CS(TEMP3_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
-  CS(TEMP4_CRSF_ID,   0, STR_SENSOR_TEMP1,         UNIT_TEMPERATURE,       0),
+  CS(TEMP2_CRSF_ID,   0, STR_SENSOR_TEMP2,         UNIT_TEMPERATURE,       0),
+  CS(TEMP3_CRSF_ID,   0, STR_SENSOR_TEMP3,         UNIT_TEMPERATURE,       0),
+  CS(TEMP4_CRSF_ID,   0, STR_SENSOR_TEMP4,         UNIT_TEMPERATURE,       0),
   CS(0,              0, "UNKNOWN",          UNIT_RAW,               0),
 };
 
@@ -88,8 +88,22 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
     return crossfireSensors[FLIGHT_MODE_INDEX];
   else if (id == BARO_ALT_ID)
     return crossfireSensors[BARO_ALTITUDE_INDEX];
-  else if (id == RPM_CRSF_ID)
-    return crossfireSensors[RPM_INDEX];
+  else if (id == RPM1_CRSF_ID)
+    return crossfireSensors[RPM1_INDEX];
+  else if (id == RPM2_CRSF_ID)
+    return crossfireSensors[RPM2_INDEX];
+  else if (id == RPM3_CRSF_ID)
+    return crossfireSensors[RPM3_INDEX];
+  else if (id == RPM4_CRSF_ID)
+    return crossfireSensors[RPM4_INDEX];
+  else if (id == TEMP1_CRSF_ID)
+    return crossfireSensors[TEMP1_INDEX];
+  else if (id == TEMP2_CRSF_ID)
+    return crossfireSensors[TEMP2_INDEX];
+  else if (id == TEMP3_CRSF_ID)
+    return crossfireSensors[TEMP3_INDEX];
+  else if (id == TEMP4_CRSF_ID)
+    return crossfireSensors[TEMP4_INDEX];
   else
     return crossfireSensors[UNKNOWN_INDEX];
 }
@@ -172,12 +186,46 @@ void processCrossfireTelemetryFrame(uint8_t module, uint8_t* rxBuffer,
           getCrossfireTelemetryValue<2>(5, value, rxBuffer))
         processCrossfireTelemetryValue(VERTICAL_SPEED_INDEX, value);
       break;
-  case RPM_CRSF_ID:
-    if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
-        processCrossfireTelemetryValue(RPM_INDEX, value);
-    }
-  break;
-
+    case RPM1_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(RPM1_INDEX, value);
+      }
+      break;
+    case RPM2_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(RPM2_INDEX, value);
+      }
+    break;
+    case RPM3_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(RPM3_INDEX, value);
+      }
+      break;
+    case RPM4_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(RPM4_INDEX, value);
+      }
+      break;
+    case TEMP1_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(TEMP1_INDEX, value);
+      }
+      break;
+    case TEMP2_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(TEMP2_INDEX, value);
+      }
+      break;
+    case TEMP3_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(TEMP3_INDEX, value);
+      }
+      break;
+    case TEMP4_CRSF_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer)) {
+          processCrossfireTelemetryValue(TEMP4_INDEX, value);
+      }
+      break;
     case LINK_ID:
       for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value, rxBuffer)) {

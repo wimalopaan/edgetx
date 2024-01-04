@@ -35,14 +35,14 @@
 #define CF_VARIO_ID                    0x07
 #define BATTERY_ID                     0x08
 #define BARO_ALT_ID                    0x09
-#define TEMP1_CRSF_ID                   0x48
-#define TEMP1_CRSF_ID                   0x49
-#define TEMP4_CRSF_ID                   0x4a
-#define TEMP5_CRSF_ID                   0x4b
-#define RPM1_CRSF_ID                    0x4c
-#define RPM2_CRSF_ID                    0x4d
-#define RPM3_CRSF_ID                    0x4e
-#define RPM4_CRSF_ID                    0x4f
+#define TEMP1_CRSF_ID                  0x48
+#define TEMP2_CRSF_ID                  0x49
+#define TEMP3_CRSF_ID                  0x4a
+#define TEMP4_CRSF_ID                  0x4b
+#define RPM1_CRSF_ID                   0x4c
+#define RPM2_CRSF_ID                   0x4d
+#define RPM3_CRSF_ID                   0x4e
+#define RPM4_CRSF_ID                   0x4f
 #define LINK_ID                        0x14
 #define CHANNELS_ID                    0x16
 #define LINK_RX_ID                     0x1C
@@ -101,6 +101,7 @@ enum CrossfireSensorIndexes {
   BARO_ALTITUDE_INDEX,
   RPM1_INDEX,
   RPM2_INDEX,
+  RPM3_INDEX,
   RPM4_INDEX,
   TEMP1_INDEX,
   TEMP2_INDEX,
