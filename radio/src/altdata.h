@@ -32,8 +32,7 @@ namespace AlternateData {
                 const uint8_t v = mData[mNextIndex];
                 TRACE("pushNextData: %d = %d", mNextIndex, v);
                 f(v);
-                ++mNextIndex;
-                if (mNextIndex >= N) {
+                if (++mNextIndex >= N) {
                     mNextIndex = 0;
                 }
             }

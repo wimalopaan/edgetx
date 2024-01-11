@@ -2888,6 +2888,21 @@ static int luaApplyRGBLedColors(lua_State * L)
 
 #if defined(ALTDATA) 
 
+/*luadoc
+@function setAlternateData(index, value)
+
+@param index: index of the alternate data item [0,63] 
+
+@param value: value of the alternate data item [0,255]
+
+Sets data item in the alternate data container.
+
+The alternate data container may be used by lua scripts to transport
+special data to the rx/fc via sportTelemetryPush() / crsfTelemetryPush()
+
+@status current Introduced in 2.11
+*/
+
 static int luaSetAlternateData(lua_State * const L)
 {
   const uint8_t id = luaL_checkunsigned(L, 1);
@@ -2898,6 +2913,19 @@ static int luaSetAlternateData(lua_State * const L)
   }
   return 0;
 }
+
+/*luadoc
+@function getAlternateData(index)
+
+@param index: index of the alternate data item [0,63] 
+
+Gets data item of the alternate data container.
+
+@retval value of data item
+
+@status current Introduced in 2.11
+*/
+
 static int luaGetAlternateData(lua_State * const L)
 {
   const uint8_t id = luaL_checkunsigned(L, 1);
@@ -2908,6 +2936,23 @@ static int luaGetAlternateData(lua_State * const L)
   }
   return 0;
 }
+
+/*luadoc
+@function getAlternateNextChunk(size)
+
+@param size: size of the next chunk of alternate data 
+
+This function gets a chunk of size "size" of the alternate data container. 
+It may be periodically called by some lua script to get a subset of size 
+"size" of the alternate data set. This data may then be pushed by
+ sportTelemetryPush() / crsfTelemetryPush() to the rx/fc.
+
+@retval start index of the returned chunk of size "size"
+
+@retval table of size "size" with the alternate data
+
+@status current Introduced in 2.11
+*/
 
 static int luaGetAlternateNextChunk(lua_State* const L) {
     const uint8_t sizeOfChunk = luaL_checkunsigned(L, 1);
@@ -3017,9 +3062,9 @@ LROT_BEGIN(etxlib, NULL, 0)
   LROT_FUNCENTRY(applyRGBLedColors, luaApplyRGBLedColors )
 #endif
 #if defined(ALTDATA)
-  LROT_FUNCENTRY(setAlternateData , luaSetAlternateData )
-  LROT_FUNCENTRY(getAlternateData , luaGetAlternateData )
-  LROT_FUNCENTRY(getAlternateNextChunk , luaGetAlternateNextChunk )
+  LROT_FUNCENTRY(setAlternateData, luaSetAlternateData )
+  LROT_FUNCENTRY(getAlternateData, luaGetAlternateData )
+  LROT_FUNCENTRY(getAlternateNextChunk, luaGetAlternateNextChunk )
 #endif
 LROT_END(etxlib, NULL, 0)
 

@@ -202,6 +202,11 @@ if(GVARS)
   math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${GVARS_VARIANT})
 endif()
 
+if(ALTDATA)
+  add_definitions(-DALTDATA)
+  set(SRC ${SRC} altdata.cpp)
+endif()
+
 if(FAI STREQUAL YES)
   add_definitions(-DFAI)
 elseif(FAI STREQUAL CHOICE)
