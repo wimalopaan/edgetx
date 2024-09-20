@@ -1,0 +1,3 @@
+src/thirdparty/FreeRTOS/include
+src/thirdparty/FreeRTOS/portable/ThirdParty/GCC/RP2040/include
+src/thirdparty/FreeRTOS/portable/ThirdParty/GCC/Xtensa_ESP32/include
