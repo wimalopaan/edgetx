@@ -69,6 +69,7 @@ else()
 endif()
 option(SHMBW "Enable SHM variables also in b&w radios" OFF)
 
+option(VCONTROLS "Enable virtual controls support" ON)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -495,6 +496,10 @@ else(SIZE_TARGET_MEM_DEFINE MATCHES 8192)
   add_definitions(-DSDRAM_8M)
 endif()
 
+if(VCONTROLS)
+  add_definitions(-DVCONTROLS)
+endif()
+
 set(SRC
   ${SRC}
   edgetx.cpp
@@ -565,6 +570,9 @@ if(ALL_LANGUAGES)
     translations/sim/lang_tw.cpp
     translations/sim/lang_ua.cpp
   )
+endif()
+if(VCONTROLS)
+  set(SRC ${SRC} vcontrols.cpp)
 endif()
 
 if(USBJ_EX)
