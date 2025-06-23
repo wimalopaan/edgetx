@@ -67,6 +67,7 @@ if(NATIVE_BUILD)
 else()
   option(ALL_LANGUAGES "Enable runtime language selection" OFF)
 endif()
+option(SHMBW "Enable SHM variables also in b&w radios" OFF)
 
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -337,6 +338,10 @@ endif()
 
 if(OVERRIDE_CHANNEL_FUNCTION)
   add_definitions(-DOVERRIDE_CHANNEL_FUNCTION)
+endif()
+
+if(SHMBW)
+  add_definitions(-DSHM_BW)
 endif()
 
 if(DANGEROUS_MODULE_FUNCTIONS)
