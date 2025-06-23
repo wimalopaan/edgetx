@@ -2475,7 +2475,7 @@ static int luaSerialSetPower(lua_State* L)
 }
 #endif
 
-#if defined(COLORLCD)
+#if defined(COLORLCD) || defined(SHM_BW)
 static int shmVar[16] = {0};
 
 /*luadoc
@@ -2978,7 +2978,7 @@ LROT_BEGIN(etxlib, NULL, 0)
   LROT_FUNCENTRY( serialGetPower, luaSerialGetPower )
   LROT_FUNCENTRY( serialSetPower, luaSerialSetPower )
 #endif
-#if defined(COLORLCD)
+#if defined(COLORLCD) || defined(SHM_BW)
   LROT_FUNCENTRY( setShmVar, luaSetShmVar )
   LROT_FUNCENTRY( getShmVar, luaGetShmVar )
 #endif
