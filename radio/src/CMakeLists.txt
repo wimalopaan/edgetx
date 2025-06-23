@@ -67,6 +67,7 @@ if(NATIVE_BUILD)
 else()
   option(ALL_LANGUAGES "Enable runtime language selection" OFF)
 endif()
+option(SHMBW "Enable SHM variables also in b&w radios" OFF)
 
 if(PCB STREQUAL X7 AND PCBREV STREQUAL LR3PRO)
   option(POWER_LED_BLUE  "Override Power LED to be normally Blue" ON)
@@ -300,6 +301,10 @@ endif()
 
 if(OVERRIDE_CHANNEL_FUNCTION)
   add_definitions(-DOVERRIDE_CHANNEL_FUNCTION)
+endif()
+
+if(SHMBW)
+  add_definitions(-DSHM_BW)
 endif()
 
 if(DANGEROUS_MODULE_FUNCTIONS)
