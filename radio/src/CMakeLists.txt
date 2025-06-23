@@ -62,6 +62,7 @@ if(PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019)
 else()
   option(USBJ_EX "Enable USB Joystick Extension" ON)
 endif()
+option(SHMBW "Enable SHM variables also in b&w radios" OFF)
 
 if(PCB STREQUAL X7 AND PCBREV STREQUAL LR3PRO)
   option(POWER_LED_BLUE  "Override Power LED to be normally Blue" ON)
@@ -274,6 +275,10 @@ endif()
 
 if(OVERRIDE_CHANNEL_FUNCTION)
   add_definitions(-DOVERRIDE_CHANNEL_FUNCTION)
+endif()
+
+if(SHMBW)
+  add_definitions(-DSHM_BW)
 endif()
 
 if(DANGEROUS_MODULE_FUNCTIONS)
