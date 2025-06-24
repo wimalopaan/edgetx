@@ -460,7 +460,7 @@ static bool switchIsAvailable(int swtch, bool invert)
 static bool isSwitchSwitchAvailable(int swtch, bool invert) {
   // Check normal switch
   if (swtch < MAX_SWITCHES * 3) {
-    div_t swinfo = switchInfo(swtch);
+    div_t swinfo = switchInfo(swtch + SWSRC_FIRST_SWITCH);
     if (swinfo.quot >= switchGetMaxSwitches() + switchGetMaxFctSwitches()) {
       return false;
     }
@@ -480,7 +480,7 @@ static bool isSwitchSwitchAvailable(int swtch, bool invert) {
   }
 
   // Multipos switch
-  int index = (swtch - SWSRC_FIRST_MULTIPOS_SWITCH) / XPOTS_MULTIPOS_COUNT;
+  int index = (swtch + SWSRC_FIRST_SWITCH - SWSRC_FIRST_MULTIPOS_SWITCH) / XPOTS_MULTIPOS_COUNT;
   return (index < adcGetMaxInputs(ADC_INPUT_FLEX)) ? IS_POT_MULTIPOS(index) : false;
 }
 
