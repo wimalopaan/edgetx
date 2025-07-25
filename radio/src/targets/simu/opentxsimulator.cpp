@@ -22,6 +22,7 @@
 #include "opentxsimulator.h"
 #include "edgetx.h"
 #include "simulcd.h"
+#include "simuaudio.h"
 #include "switches.h"
 #include "serial.h"
 #include "myeeprom.h"
@@ -87,18 +88,6 @@ void firmwareTraceCb(const char * text)
     if (dev)
       dev->write(text);
   }
-}
-
-void fsLedRGB(uint8_t idx, uint32_t color)
-{
-}
-
-void fsLedOn(uint8_t idx)
-{
-}
-
-void fsLedOff(uint8_t idx)
-{
 }
 
 // Serial port handling needs to know about OpenTxSimulator, so we we
@@ -283,7 +272,7 @@ void OpenTxSimulator::start(const char * filename, bool tests)
 
   QMutexLocker lckr(&m_mtxSimuMain);
   QMutexLocker slckr(&m_mtxSettings);
-  startAudio(volumeGain);
+  simuAudioInit();
   simuStart(tests, simuSdDirectory.toLatin1().constData(),
             simuSettingsDirectory.toLatin1().constData());
 
@@ -301,6 +290,7 @@ void OpenTxSimulator::stop()
 
   QMutexLocker lckr(&m_mtxSimuMain);
   simuStop();
+  simuAudioDeInit();
 
   emit stopped();
 }
@@ -451,17 +441,7 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
     return;
 
   setKey(key, 1);
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
   QTimer::singleShot(10, [this, key]() { setKey(key, 0); });
-#else
-  QTimer *timer = new QTimer(this);
-  timer->setSingleShot(true);
-  connect(timer, &QTimer::timeout, [=]() {
-    setKey(key, 0);
-    timer->deleteLater();
-  } );
-  timer->start(10);
-#endif
 #endif  // defined(ROTARY_ENCODER_NAVIGATION)
 }
 
@@ -544,12 +524,12 @@ void OpenTxSimulator::sendTelemetry(const uint8_t module, const uint8_t protocol
   case SIMU_TELEMETRY_PROTOCOL_FRSKY_SPORT:
     sportProcessTelemetryPacket(module,
                                 (uint8_t *)data.constData(),
-                                data.count());
+                                data.size());
     break;
   case SIMU_TELEMETRY_PROTOCOL_FRSKY_HUB:
     frskyDProcessPacket(module,
                         (uint8_t *)data.constData(),
-                        data.count());
+                        data.size());
     break;
   case SIMU_TELEMETRY_PROTOCOL_FRSKY_HUB_OOB:
     // FrSky D telemetry is a stream which can span multiple
@@ -573,7 +553,7 @@ void OpenTxSimulator::sendTelemetry(const uint8_t module, const uint8_t protocol
   case SIMU_TELEMETRY_PROTOCOL_CROSSFIRE:
     processCrossfireTelemetryFrame(module,
                                    (uint8_t *)data.constData(),
-                                   data.count());
+                                   data.size());
     break;
   default:
     // Do nothing

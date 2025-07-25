@@ -45,9 +45,6 @@ namespace Board {
   enum Type
   {
     BOARD_UNKNOWN = -1,
-    BOARD_SKY9X,
-    BOARD_9XRPRO,
-    BOARD_AR9X,
     BOARD_TARANIS_X7,
     BOARD_TARANIS_X7_ACCESS,
     BOARD_TARANIS_X9D,
@@ -94,6 +91,7 @@ namespace Board {
     BOARD_FATFISH_F16,
     BOARD_HELLORADIOSKY_V16,
     BOARD_RADIOMASTER_MT12,
+    BOARD_HELLORADIOSKY_V14,
     BOARD_TYPE_COUNT,
     BOARD_TYPE_MAX = BOARD_TYPE_COUNT - 1
   };
@@ -478,16 +476,6 @@ class Boards
 // temporary aliases for transition period, use Boards class instead.
 #define getBoardCapability(b__, c__)   Boards::getCapability(b__, c__)
 
-inline bool IS_SKY9X(Board::Type board)
-{
-  return board == Board::BOARD_SKY9X || board == Board::BOARD_9XRPRO || board == Board::BOARD_AR9X;
-}
-
-inline bool IS_9XRPRO(Board::Type board)
-{
-  return board == Board::BOARD_9XRPRO;
-}
-
 inline bool IS_BETAFPV_LR3PRO(Board::Type board)
 {
   return board == Board::BOARD_BETAFPV_LR3PRO;
@@ -613,6 +601,11 @@ inline bool IS_FATFISH_F16(Board::Type board)
   return board == Board::BOARD_FATFISH_F16;
 }
 
+inline bool IS_HELLORADIOSKY_V14(Board::Type board)
+{
+  return board == Board::BOARD_HELLORADIOSKY_V14;
+}
+
 inline bool IS_HELLORADIOSKY_V16(Board::Type board)
 {
   return board == Board::BOARD_HELLORADIOSKY_V16;
@@ -630,7 +623,11 @@ inline bool IS_FAMILY_T16(Board::Type board)
 
 inline bool IS_FAMILY_T12(Board::Type board)
 {
-  return board == Board::BOARD_JUMPER_T12 ||
+  return board == Board::BOARD_BETAFPV_LR3PRO ||
+         board == Board::BOARD_HELLORADIOSKY_V14 ||
+         board == Board::BOARD_IFLIGHT_COMMANDO8 ||
+         board == Board::BOARD_JUMPER_BUMBLEBEE ||
+         board == Board::BOARD_JUMPER_T12 ||
          board == Board::BOARD_JUMPER_T12MAX ||
          board == Board::BOARD_JUMPER_T14 ||
          board == Board::BOARD_JUMPER_T20 ||
@@ -638,19 +635,16 @@ inline bool IS_FAMILY_T12(Board::Type board)
          board == Board::BOARD_JUMPER_TLITE ||
          board == Board::BOARD_JUMPER_TLITE_F4 ||
          board == Board::BOARD_JUMPER_TPRO ||
-         board == Board::BOARD_JUMPER_TPROV2 ||
          board == Board::BOARD_JUMPER_TPROS ||
-         board == Board::BOARD_JUMPER_BUMBLEBEE ||
-         board == Board::BOARD_RADIOMASTER_TX12 ||
-         board == Board::BOARD_RADIOMASTER_TX12_MK2 ||
-         board == Board::BOARD_RADIOMASTER_ZORRO ||
+         board == Board::BOARD_JUMPER_TPROV2 ||
          board == Board::BOARD_RADIOMASTER_BOXER ||
-         board == Board::BOARD_RADIOMASTER_MT12 ||
-         board == Board::BOARD_RADIOMASTER_POCKET ||
          board == Board::BOARD_RADIOMASTER_GX12 ||
          board == Board::BOARD_RADIOMASTER_T8 ||
-         board == Board::BOARD_BETAFPV_LR3PRO ||
-         board == Board::BOARD_IFLIGHT_COMMANDO8;
+         board == Board::BOARD_RADIOMASTER_TX12 ||
+         board == Board::BOARD_RADIOMASTER_TX12_MK2 ||
+         board == Board::BOARD_RADIOMASTER_MT12 ||
+         board == Board::BOARD_RADIOMASTER_POCKET ||
+         board == Board::BOARD_RADIOMASTER_ZORRO;
 }
 
 inline bool IS_FLYSKY_NV14(Board::Type board)
@@ -783,7 +777,7 @@ inline bool IS_STM32(Board::Type board)
 
 inline bool IS_ARM(Board::Type board)
 {
-  return IS_STM32(board) || IS_SKY9X(board);
+  return IS_STM32(board);
 }
 
 inline bool HAS_LARGE_LCD(Board::Type board)

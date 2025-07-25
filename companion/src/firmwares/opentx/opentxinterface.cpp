@@ -216,8 +216,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return (IS_HORUS_OR_TARANIS(board) ? 500 : (id.contains("ppmca") ? 125 : 0));
     case SYMLimits:
       return 1;
-    case OptrexDisplay:
-      return (board == BOARD_SKY9X ? true : false);
     case HasVario:
       return Boards::isAir(board);
     case HasVarioSink:
@@ -234,8 +232,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_TARANIS_XLITE(board) && !id.contains("stdr9m");
     case HasPPMStart:
       return true;
-    case HastxCurrentCalibration:
-      return (IS_SKY9X(board) ? true : false);
     case HasVolume:
       return true;
     case HasBrightness:
@@ -614,6 +610,13 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, EU + FLEX);
+
+  /* HelloRadioSky V14 board */
+  firmware = new OpenTxFirmware(FIRMWAREID("v14"), Firmware::tr("HelloRadioSky V14"), BOARD_HELLORADIOSKY_V14);
+  addOpenTxCommonOptions(firmware);
+  addOpenTxFontOptions(firmware);
+  registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* HelloRadioSky V16 board */
   firmware = new OpenTxFirmware(FIRMWAREID("v16"), Firmware::tr("HelloRadioSky V16"), BOARD_HELLORADIOSKY_V16);

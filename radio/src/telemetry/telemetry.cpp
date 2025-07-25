@@ -75,6 +75,11 @@ static rxStatStruct rxStat;
 
 telemetry_buffer _telemetry_rx_buffer[NUM_MODULES];
 
+static void clearTelemetryRxBuffers()
+{
+  memset(_telemetry_rx_buffer, 0, sizeof(_telemetry_rx_buffer));
+}
+
 uint8_t* getTelemetryRxBuffer(uint8_t moduleIdx)
 {
   return _telemetry_rx_buffer[moduleIdx].buffer;
@@ -185,6 +190,7 @@ void telemetryStart()
     timer_create(&telemetryTimer, telemetryTimerCb, "Telem", 2, true);
   }
 
+  clearTelemetryRxBuffers();
   timer_start(&telemetryTimer);
 }
 
@@ -330,7 +336,7 @@ void telemetryWakeup()
       audioEvent(AU_SENSOR_LOST);
     }
 
-#if defined(PCBFRSKY)
+#if defined(PXX1) || defined(PXX2)
     if (isBadAntennaDetected()) {
       AUDIO_RAS_RED();
       POPUP_WARNING_ON_UI_TASK(STR_WARNING, STR_ANTENNAPROBLEM);

@@ -228,12 +228,11 @@
 #endif
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define TR_ENTER                     "[ENTER]"
-#elif defined(PCBNV14) || defined(PCBPL18)
+#if defined(PCBNV14) || defined(PCBPL18)
   #define TR_ENTER                     "[NEXT]"
 #else
-  #define TR_ENTER                     "[MENU]"
+  #define TR_ENTER_LONG                "[ENTER LONG]"
+  #define TR_ENTER                     "[ENTER]"
 #endif
 
 #if defined(PCBHORUS)
@@ -251,7 +250,6 @@
   #define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
 #endif
 
-#define TR_MENUWHENDONE        TR_ENTER " AL ACABAR "
 #define TR_FREE                "libre"
 #define TR_YES                         "Yes"
 #define TR_NO                          "No"
@@ -271,6 +269,7 @@
 #define TR_TIMER               TR("Timer", "Timer ")
 #define TR_NO_TIMERS                   "No timers"
 #define TR_START                       "Start"
+#define TR_NEXT                        "Next"
 #define TR_ELIMITS             TR("E.Límite", "Ampliar límites")
 #define TR_ETRIMS              TR("E.Trims", "Ampliar trims")
 #define TR_TRIMINC             "Paso trim"
@@ -419,16 +418,23 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim - +"
 #define TR_CALIB_DONE          "Calibration completed"
-#if defined(PCBHORUS)
-  #define TR_MENUTOSTART       "Presiona [Enter] para empezar"
-  #define TR_SETMIDPOINT       "Centra sticks/pots/sliders y presiona [Enter]"
-  #define TR_MOVESTICKSPOTS    "Mueve sticks, pots and sliders y presiona [Enter]"
+#if defined(COLORLCD)
+  #define TR_SETMIDPOINT       "Centra sticks/pots/sliders"
+  #define TR_MOVESTICKSPOTS    "Mueve sticks, pots and sliders"
 #else
   #define TR_MENUTOSTART       TR_ENTER " EMPEZAR"
+#if defined(SURFACE_RADIO)
+  #define TR_SETMIDPOINT               "SET POTS MIDPOINT"
+  #define TR_MOVESTICKSPOTS            "MOVE ST/TH/POTS/AXIS"
+#else
   #define TR_SETMIDPOINT       TR("STICKS AL CENTRO", "STICKS AL CENTRO")
   #define TR_MOVESTICKSPOTS    "MOVER STICKS/POTS"
 #endif
-#define TR_TXnRX               "Tx:\0Rx:"
+  #define TR_MENUWHENDONE      TR_ENTER " AL ACABAR "
+#define TR_AXISDIR                     "AXIS DIR"
+#define TR_MENUAXISDIR                 TR_ENTER_LONG " "  TR_AXISDIR
+#endif
+#define TR_TXnRX              "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_NODATA              "SIN DATOS"
 #define TR_US                         "us"
@@ -644,6 +650,9 @@
 #define TR_POWER_METER_INT             "Medidor potencia(INT)"
 #define TR_SPECTRUM_ANALYSER_EXT       "Espectro (EXT)"
 #define TR_SPECTRUM_ANALYSER_INT       "Espectro (INT)"
+#define TR_GHOST_MODULE_CONFIG         "Ghost module config"
+#define TR_GPS_MODEL_LOCATOR           "GPS model locator"
+#define TR_REFRESH                     "Refresh"
 #define TR_SDCARD_FULL                 "SD Card llena"
 #if defined(COLORLCD)
 #define TR_SDCARD_FULL_EXT             TR_SDCARD_FULL "\nLogs and Screenshots disabled"
