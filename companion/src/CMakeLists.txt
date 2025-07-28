@@ -44,12 +44,9 @@ if(WIN32)
   endif()
 endif()
 
-if(SDL2_FOUND)
-  include_directories(${SDL2_INCLUDE_DIRS})
-  add_definitions(-DJOYSTICKS -DSIMU_AUDIO)
-  if(TARGET SDL2::SDL2)
-    set(SDL2_LIBRARIES SDL2::SDL2)
-  endif()
+if(TARGET SDL2::SDL2)
+  add_definitions(-DUSE_SDL)
+  set(SDL2_LIBRARIES SDL2::SDL2)
 endif()
 
 add_definitions(${APP_COMMON_DEFINES})  # set in top-level CMakeLists
@@ -141,10 +138,11 @@ set(HWDEFS_CMD "${COMPANION_SRC_DIRECTORY}/../util/generate_hwdefs_qrc.py")
 
 # qrc used by Companion and Simulator
 add_custom_command(OUTPUT ${HWDEFS_QRC}
-  COMMAND ${HWDEFS_CMD} -d ${HWDEFS_DIR}
-                        -t ${HWDEFS_TMPL}
-                        -p ${HWDEFS_PHDR}
-                        -o ${HWDEFS_QRC}
+  COMMAND ${PYTHON_EXECUTABLE} ${HWDEFS_CMD}
+      -d ${HWDEFS_DIR}
+      -t ${HWDEFS_TMPL}
+      -p ${HWDEFS_PHDR}
+      -o ${HWDEFS_QRC}
   DEPENDS ${HWDEFS_TMPL}
 )
 
@@ -266,10 +264,21 @@ if(WIN32)
   set(icon_RC images/winicons/icon.rc)
 endif()
 
-add_executable(${COMPANION_NAME}
-               MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_HDRS} ${icon_RC})
-target_link_libraries(${COMPANION_NAME}
-                      PRIVATE ${CPN_COMMON_LIB} generaledit modeledit qcustomplot miniz updates)
+add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE}
+  ${companion_SRCS}
+  ${companion_HDRS}
+  ${icon_RC}
+)
+
+target_link_libraries(${COMPANION_NAME} PRIVATE
+  ${CPN_COMMON_LIB}
+  ${SDL2_LIBRARIES}
+  generaledit
+  modeledit
+  qcustomplot
+  miniz
+  updates
+)
 
 PrintTargetReport("${COMPANION_NAME}")
 
@@ -277,10 +286,15 @@ PrintTargetReport("${COMPANION_NAME}")
 
 set(simu_SRCS simulator.cpp )
 
-add_executable(${SIMULATOR_NAME}
-               MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
-target_link_libraries(${SIMULATOR_NAME}
-                      PRIVATE ${CPN_COMMON_LIB})
+add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE}
+  ${simu_SRCS}
+  ${icon_RC}
+)
+
+target_link_libraries(${SIMULATOR_NAME} PRIVATE
+  ${CPN_COMMON_LIB}
+  ${SDL2_LIBRARIES}
+)
 
 add_subdirectory(tests)
 
@@ -449,10 +463,14 @@ elseif(WIN32)
     endif()
   endif(OPENSSL_FOUND)
 
-  if(SDL2_FOUND AND DEFINED SDL2_LIB_PATH)
-    install(FILES "${SDL2_LIB_PATH}"
-            DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}
-            COMPONENT Runtime)
+  if(TARGET SDL2::SDL2)
+    # Get the SDL2 DLL location
+    get_target_property(SDL2_DLL_PATH SDL2::SDL2 IMPORTED_LOCATION)
+    if(SDL2_DLL_PATH)
+      install(FILES "${SDL2_DLL_PATH}"
+              DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}
+              COMPONENT Runtime)
+    endif()
   endif()
 
 elseif(APPLE)
@@ -536,6 +554,7 @@ set(CPACK_STRIP_FILES FALSE)
 if(WIN32)
   set(companion_executable_path "\${CMAKE_INSTALL_BINDIR}/$<TARGET_FILE_NAME:companion>")
   set(simulator_executable_path "\${CMAKE_INSTALL_BINDIR}/$<TARGET_FILE_NAME:simulator>")
+  cmake_path(GET CMAKE_CXX_COMPILER PARENT_PATH MINGW_BIN_DIR)
 
   qt_generate_deploy_script(
     TARGET companion
@@ -575,6 +594,8 @@ if(WIN32)
     add_custom_target(installer
       COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install --config Release
       COMMAND "${CMAKE_COMMAND}" -P "${qt_deploy_script}"
+      # Hack to overwrite the pthread lib shipped with Qt
+      COMMAND "${CMAKE_COMMAND}" -E copy "${MINGW_BIN_DIR}/libwinpthread-1.dll" "${CMAKE_BINARY_DIR}/_install/bin/libwinpthread-1.dll"
       COMMAND "${NSIS_EXE}" "${NSI_FILE}"
       DEPENDS "${NSI_FILE}" "${qt_deploy_script}"
       COMMENT "Building Windows NSIS installer..."

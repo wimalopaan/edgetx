@@ -21,14 +21,13 @@
 
 #pragma once
 
-#include <unistd.h>
-#define sleep(x) usleep(1000*x)
-
 #include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <errno.h>
+
+#include <string>
 
 #define __disable_irq()
 #define __enable_irq()
@@ -52,15 +51,10 @@ void stopEepromThread();
 
 void simuMain();
 
-#if !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
-  #define SIMU_USE_SDCARD
-#endif
+void simuFatfsSetPaths(const char * sdPath, const char * settingsPath);
 
-#if defined(SIMU_USE_SDCARD)
-  void simuFatfsSetPaths(const char * sdPath, const char * settingsPath);
-#else
-  #define simuFatfsSetPaths(...)
-#endif
+std::string simuFatfsGetCurrentPath();
+std::string simuFatfsGetRealPath(const std::string &p);
 
 #if defined(TRACE_SIMPGMSPACE)
   #undef TRACE_SIMPGMSPACE
