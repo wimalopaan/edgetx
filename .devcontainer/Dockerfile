@@ -23,6 +23,8 @@ RUN pacman -S --noconfirm \
 	python \
 	python-pip \
 	python-pillow \
+	python-lz4 \
+	python-jinja \
 	screen \
 	tree \
 	unzip \
