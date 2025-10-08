@@ -13,6 +13,7 @@ RUN pacman -S --noconfirm \
 	bc \
 	cpio \
 	curl \
+	cmake \
 	dos2unix \
 	erofs-utils \
 	git \
