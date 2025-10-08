@@ -11,6 +11,7 @@ RUN pacman -S --noconfirm \
 	avr-libc \
 	base-devel \
 	bc \
+	clang \
 	cpio \
 	curl \
 	cmake \
