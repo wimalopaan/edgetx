@@ -22,6 +22,7 @@ RUN pacman -S --noconfirm \
 	platformio-core \
 	python \
 	python-pip \
+	python-pillow \
 	screen \
 	tree \
 	unzip \
