@@ -32,6 +32,8 @@ RUN pacman -S --noconfirm \
 	qt6-translations \
 	qt6-multimedia \
 	qt6-serialport \
+	qt6-svg \
+	qt6-tools \
 	screen \
 	tree \
 	unzip \
