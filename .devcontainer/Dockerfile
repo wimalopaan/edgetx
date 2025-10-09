@@ -27,6 +27,7 @@ RUN pacman -S --noconfirm \
 	python-lz4 \
 	python-jinja \
 	qt6-base \
+	qt5-base \
 	screen \
 	tree \
 	unzip \
