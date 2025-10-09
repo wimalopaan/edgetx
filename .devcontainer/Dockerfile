@@ -28,6 +28,8 @@ RUN pacman -S --noconfirm \
 	python-jinja \
 	qt6-base \
 	qt5-base \
+	qt6-tools \ 
+	qt6-translations \
 	screen \
 	tree \
 	unzip \
