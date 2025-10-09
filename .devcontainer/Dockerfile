@@ -30,6 +30,7 @@ RUN pacman -S --noconfirm \
 	qt5-base \
 	qt6-tools \ 
 	qt6-translations \
+	qt6-multimedia \
 	screen \
 	tree \
 	unzip \
