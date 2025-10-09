@@ -5,7 +5,7 @@
   },
   "remoteUser": "csp",
   "postCreateCommand": {
-     "git1": "git clone --recursive https://github.com/wimalopaan/edgetx.git"
+     "git1": "git clone --recursive https://github.com/wimalopaan/edgetx.git edgetx.wm"
   }
 }
 
