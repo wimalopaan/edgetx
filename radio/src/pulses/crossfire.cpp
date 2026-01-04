@@ -161,6 +161,8 @@ uint8_t createCrossfireExtendedChannelsFrame(uint8_t moduleIdx, uint8_t * frame,
   return buf - frame;
 }
 
+extern CrossfireModuleStatus crossfireModuleStatus[2];
+
 static void setupPulsesCrossfire(uint8_t module, uint8_t*& p_buf,
                                  uint8_t endpoint, int16_t* channels,
                                  uint8_t nChannels)
@@ -213,7 +215,9 @@ static void setupPulsesCrossfire(uint8_t module, uint8_t*& p_buf,
     } else {
       /* TODO: nChannels */
       p_buf += createCrossfireChannelsFrame(module, p_buf, channels);
-      p_buf += createCrossfireExtendedChannelsFrame(module, p_buf, channels);
+      if (crossfireModuleStatus[module].flags & 0x80) { // indicates 32 channel ELRS
+        p_buf += createCrossfireExtendedChannelsFrame(module, p_buf, channels);
+      }
     }
   }
 }
