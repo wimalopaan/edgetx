@@ -393,7 +393,8 @@ void processCrossfireTelemetryFrame(uint8_t module, uint8_t* rxBuffer,
           crossfireModuleStatus[module].isELRS = true;
         crossfireModuleStatus[module].major = rxBuffer[14 + nameSize];
         crossfireModuleStatus[module].minor = rxBuffer[15 + nameSize];
-        crossfireModuleStatus[module].revision = rxBuffer[16 + nameSize];
+        crossfireModuleStatus[module].revision = (rxBuffer[16 + nameSize] & 0x3f);
+        crossfireModuleStatus[module].flags = (rxBuffer[16 + nameSize] & 0xc0);
 
         ModuleData *md = &g_model.moduleData[module];
 
