@@ -47,7 +47,9 @@
 #define LINK_TX_ID                     0x1D
 #define ATTITUDE_ID                    0x1E
 #define FLIGHT_MODE_ID                 0x21
+#if defined(WMEXTENSION)
 #define EXTENDED_CHANNELS_ID           0x26
+#endif
 #define PING_DEVICES_ID                0x28
 #define DEVICE_INFO_ID                 0x29
 #define REQUEST_SETTINGS_ID            0x2A
@@ -116,7 +118,9 @@ struct CrossfireModuleStatus
     char name[CRSF_NAME_MAXSIZE];
     bool queryCompleted;
     bool isELRS;
+#if defined(WMEXTENSION)
     uint8_t flags;
+#endif
 };
 
 extern CrossfireModuleStatus crossfireModuleStatus[2];

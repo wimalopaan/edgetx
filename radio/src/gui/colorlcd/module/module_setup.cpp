@@ -188,10 +188,19 @@ class ModuleWindow : public Window
     }
   #endif
 
+#if defined(WMEXTENSION)
+    if (!isModuleCrossfire(moduleIdx)) {
+      // Crossfire always uses ch1-16/ch1-32, so don't present choice
+      auto line = newLine(grid);
+      new StaticText(line, rect_t{}, STR_CHANNELRANGE);
+      chRange = new ModuleChannelRange(line, moduleIdx);
+    }
+#else
     // Channel Range
     chRangeLine = newLine(grid);
     new StaticText(chRangeLine, rect_t{}, STR_CHANNELRANGE);
     chRange = new ModuleChannelRange(chRangeLine, moduleIdx);
+#endif
 
     // Failsafe
     fsLine = newLine(grid);
@@ -206,7 +215,11 @@ class ModuleWindow : public Window
       auto obj = new PpmFrameSettings<PpmModule>(line, &md->ppm);
 
       // copy pointer to frame len edit object to channel range
+#if defined(WMEXTENSION)
+      if (chRange) chRange->setPpmFrameLenEditObject(obj->getPpmFrameLenEditObject());
+#else
       chRange->setPpmFrameLenEditObject(obj->getPpmFrameLenEditObject());
+#endif
     }
 
     // Generic module parameters
