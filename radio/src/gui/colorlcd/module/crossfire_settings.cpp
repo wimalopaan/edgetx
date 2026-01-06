@@ -28,6 +28,8 @@
 
 #define SET_DIRTY() storageDirty(EE_MODEL)
 
+extern CrossfireModuleStatus crossfireModuleStatus[2];
+
 CrossfireSettings::CrossfireSettings(Window* parent, const FlexGridLayout& g,
                                      uint8_t moduleIdx) :
     Window(parent, rect_t{}), md(&g_model.moduleData[moduleIdx]), moduleIdx(moduleIdx)
@@ -63,7 +65,17 @@ CrossfireSettings::CrossfireSettings(Window* parent, const FlexGridLayout& g,
     char msg[64] = "";
     // sprintf(msg, "%d Hz %" PRIu32 " Err", 1000000 / getMixerSchedulerPeriod(),
     //         telemetryErrors);
+
+#if defined(WMEXTENSION)
+    if (crossfireModuleStatus[moduleIdx].flags & 0x80) {
+      sprintf(msg, "%d Hz Ch32", 1000000 / getMixerSchedulerPeriod());
+    }
+    else {
+      sprintf(msg, "%d Hz", 1000000 / getMixerSchedulerPeriod());
+    }
+#else
     sprintf(msg, "%d Hz", 1000000 / getMixerSchedulerPeriod());
+#endif
     return std::string(msg);
   });
  
