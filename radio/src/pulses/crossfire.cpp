@@ -133,6 +133,7 @@ uint8_t createCrossfireChannelsFrame(uint8_t moduleIdx, uint8_t * frame, int16_t
   return buf - frame;
 }
 
+#if defined(WMEXTENSION)
 // Range for pulses (channels output) is [-1024:+1024]
 uint8_t createCrossfireExtendedChannelsFrame(uint8_t moduleIdx, uint8_t * frame, int16_t * pulses)
 {
@@ -160,6 +161,7 @@ uint8_t createCrossfireExtendedChannelsFrame(uint8_t moduleIdx, uint8_t * frame,
   *buf++ = crc8(crc_start, 23);
   return buf - frame;
 }
+#endif
 
 extern CrossfireModuleStatus crossfireModuleStatus[2];
 
@@ -215,9 +217,11 @@ static void setupPulsesCrossfire(uint8_t module, uint8_t*& p_buf,
     } else {
       /* TODO: nChannels */
       p_buf += createCrossfireChannelsFrame(module, p_buf, channels);
+#if defined(WMEXTENSION)
       if (crossfireModuleStatus[module].flags & 0x80) { // indicates 32 channel ELRS
         p_buf += createCrossfireExtendedChannelsFrame(module, p_buf, channels);
       }
+#endif
     }
   }
 }
