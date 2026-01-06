@@ -12,6 +12,7 @@ set_property(CACHE TRANSLATIONS PROPERTY STRINGS ${RADIO_LANGUAGES})
 set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
 set(POPUP_LEVEL 2 CACHE STRING "Popup level")
 
+option(WMEXTENSION "Enable WM Extensions" ON)
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
 option(CURVES "Curves" ON)
@@ -198,6 +199,10 @@ endif()
 
 if (LUA_MIXER AND NOT LUA)
   message(FATAL_ERROR "LUA_MIXER requires LUA!!")
+endif()
+
+if (WMEXTENSION)
+  add_definitions(-DWMEXTENSION)
 endif()
 
 if(LUA)
