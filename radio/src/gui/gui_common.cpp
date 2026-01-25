@@ -316,8 +316,8 @@ bool checkSourceAvailable(int source, uint32_t sourceTypes)
 }
 
 #define SRC_COMMON \
-            SRC_STICK | SRC_POT | SRC_TILT | SRC_SPACEMOUSE | SRC_MINMAX | SRC_TRIM | \
-            SRC_SWITCH | SRC_FUNC_SWITCH | SRC_LOGICAL_SWITCH | SRC_TRAINER | SRC_GVAR
+            SRC_STICK | SRC_POT | SRC_TILT | SRC_LIGHT | SRC_SPACEMOUSE | SRC_MINMAX | SRC_TRIM | \
+            SRC_SWITCH | SRC_FUNC_SWITCH | SRC_LOGICAL_SWITCH | SRC_TRAINER | SRC_GVAR | SRC_VCONTROL
 
 bool isSourceAvailable(int source)
 {

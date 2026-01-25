@@ -444,6 +444,10 @@ else(SIZE_TARGET_MEM_DEFINE MATCHES 8192)
   add_definitions(-DSDRAM_8M)
 endif()
 
+if(VCONTROLS)
+  add_definitions(-DVCONTROLS)
+endif()
+
 set(SRC
   ${SRC}
   edgetx.cpp
