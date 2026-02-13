@@ -165,6 +165,7 @@ bool LvglMinMaxParams::parseMinMaxParam(lua_State *L, const char *key)
   }
   if (!strcmp(key, "max")) {
     max = luaL_checkinteger(L, -1);
+    return true;
   }
   return false;
 }
@@ -2159,10 +2160,13 @@ void LvglWidgetTextEdit::build(lua_State *L)
 void LvglWidgetNumberEdit::parseParam(lua_State *L, const char *key)
 {
   if (parseMinMaxParam(L, key)) return;
+  if (parseGetSetParam(L, key)) return;
 
   if (!strcmp(key, "display")) {
     dispFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-  } else if (!parseGetSetParam(L, key)) {
+  } else if (!strcmp(key, "edited")) {
+    editedFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+  } else {
     LvglWidgetObject::parseParam(L, key);
   }
 }
@@ -2170,6 +2174,7 @@ void LvglWidgetNumberEdit::parseParam(lua_State *L, const char *key)
 void LvglWidgetNumberEdit::clearRefs(lua_State *L)
 {
   clearRef(L, dispFunction);
+  clearRef(L, editedFunction);
   clearGetSetRefs(L);
   LvglWidgetObject::clearRefs(L);
 }
@@ -2200,6 +2205,11 @@ void LvglWidgetNumberEdit::build(lua_State *L)
       UNPROTECT_LUA();
       lua_settop(L, t);
       return s;
+    });
+  }
+  if (editedFunction != LUA_REFNIL) {
+    ((NumberEdit*)window)->setOnEditedHandler([=]( int val) {
+      pcallSetIntVal(L, editedFunction, val);
     });
   }
 }
@@ -2472,7 +2482,6 @@ void LvglWidgetPage::build(lua_State *L)
       showBackButton, prevActionFunction != LUA_REFNIL, nextActionFunction != LUA_REFNIL);
 
   window = page->getBody();
-  window->setWindowFlag(NO_FORCED_SCROLL);
   window->setScrollHandler([=](coord_t x, coord_t y) { pcallFuncWith2Int(L, scrolledFunction, 0, x, y); });
   if (setFlex()) {
     lv_flex_align_t align1 = (align.flags & RIGHT) ? LV_FLEX_ALIGN_END : (align.flags & CENTERED) ? LV_FLEX_ALIGN_CENTER : LV_FLEX_ALIGN_START;
