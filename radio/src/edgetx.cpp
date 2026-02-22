@@ -54,11 +54,13 @@
 #endif
 
 #if defined(COLORLCD)
+  #include "layout.h"
   #include "radio_calibration.h"
-  #include "view_text.h"
-  #include "theme_manager.h"
-  #include "switch_warn_dialog.h"
   #include "startup_shutdown.h"
+  #include "switch_warn_dialog.h"
+  #include "theme_manager.h"
+  #include "view_main.h"
+  #include "view_text.h"
 #endif
 
 #if defined(CROSSFIRE)
@@ -1163,6 +1165,8 @@ void edgeTxClose(uint8_t shutdown)
   cancelShutdownAnimation();  // To prevent simulator crash
   MainWindow::instance()->shutdown();
 #if defined(LUA)
+  extern void unloadLuaTools();
+  unloadLuaTools();
   luaUnregisterWidgets();
 #endif
 #endif
@@ -1197,6 +1201,8 @@ void edgeTxResume()
   //TODO: needs to go into storageReadAll()
   TRACE("reloading theme");
   ThemePersistance::instance()->loadDefaultTheme();
+  LayoutFactory::loadCustomScreens();
+  ViewMain::instance()->show();
 #endif
 
   referenceSystemAudioFiles();
@@ -1567,6 +1573,10 @@ void edgeTxInit()
       waitSplash();
     }
 #endif // defined(GUI)
+
+#if defined(COLORLCD)
+  LayoutFactory::loadCustomScreens();
+#endif
 
 #if defined(BLUETOOTH_PROBE)
     extern volatile uint8_t btChipPresent;
