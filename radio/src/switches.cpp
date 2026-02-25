@@ -35,6 +35,10 @@
 #include "vcontrols.h"
 #endif
 
+#if defined(RADIO_GX12)
+#include "targets/taranis/gx12/bsp_io.h"
+#endif
+
 #define CS_LAST_VALUE_INIT -32768
 
 #if defined(COLORLCD)
@@ -923,7 +927,9 @@ void checkSwitches()
 #endif
 
   while (true) {
-
+#if defined(RADIO_GX12)
+    _poll_switches();
+#endif
     if (!isSwitchWarningRequired(bad_pots))
       break;
 
