@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <array>
+
 #include "dataconstants.h"
 #include "myeeprom.h"
 
@@ -234,7 +236,37 @@ extern OutputTelemetryBuffer outputTelemetryBuffer __DMA_NO_CACHE;
 #if defined(LUA)
 #include "fifo.h"
 #define LUA_TELEMETRY_INPUT_FIFO_SIZE  256
-typedef Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> TelemetryQueue;
+struct TelemetryQueue {
+    bool hasSpace(const uint32_t n) {
+        return queue.hasSpace(n);
+    }
+    void push(const uint8_t e) {
+        queue.push(e);
+    }
+    uint32_t size() const {
+        return queue.size();
+    }
+    bool probe(uint8_t& element) const {
+        return queue.probe(element);
+    }
+    bool pop(uint8_t& element) {
+        return queue.pop(element);
+    }
+    void clear() {
+        queue.clear();
+    }
+    void save(const uint8_t* const data, const uint16_t length) {
+        if (length < last.size()) {
+            for(uint16_t i = 0; i < length; ++i) {
+                last[i] = data[i];
+            }
+        }
+    }
+    Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> queue;
+    std::array<uint8_t, 62> last;
+};
+
+// typedef Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> TelemetryQueue;
 extern TelemetryQueue* luaInputTelemetryFifo;
 void registerTelemetryQueue(TelemetryQueue*);
 void deregisterTelemetryQueue(TelemetryQueue*);

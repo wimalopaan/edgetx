@@ -466,10 +466,13 @@ void deregisterTelemetryQueue(TelemetryQueue* queue)
 
 static void pushDataToQueue(TelemetryQueue* queue, uint8_t* data, int length)
 {
-  if (queue && queue->hasSpace(length)) {
-    for (uint8_t i = 0; i < length; i += 1) {
-      queue->push(data[i]);
-    }
+  if (queue) {
+      if (queue->hasSpace(length)) {
+        for (uint8_t i = 0; i < length; i += 1) {
+            queue->push(data[i]);
+        }
+      }
+      queue->save(data, length);
   }
 }
 
@@ -477,7 +480,7 @@ void pushTelemetryDataToQueues(uint8_t* data, int length)
 {
 #if defined(COLORLCD)
   for (auto it = telemetryQueues.cbegin(); it != telemetryQueues.cend(); ++it)
-    pushDataToQueue(*it, data, length);
+      pushDataToQueue(*it, data, length);
 #endif
   pushDataToQueue(luaInputTelemetryFifo, data, length);
 }

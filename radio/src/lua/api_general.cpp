@@ -1174,6 +1174,26 @@ static int luaCrossfireTelemetryPop(lua_State * L)
 
   return 0;
 }
+static int luaCrossfireTelemetryPopLast(lua_State * L)
+{
+  auto queue = getTelemetryQueue();
+
+  if (queue) {
+    if (queue->last[0] > 0) {
+      uint8_t length = queue->last[0];
+      lua_pushinteger(L, queue->last[1]);
+      lua_newtable(L);
+      for (uint8_t i=1; i<length-1; i++) {
+        lua_pushinteger(L, i);
+        lua_pushinteger(L, queue->last[i + 1]);
+        lua_settable(L, -3);
+      }
+      queue->last[0] = 0;
+      return 2;
+    }
+  }
+  return 0;
+}
 
 /*luadoc
 @function crossfireTelemetryPush()
@@ -3162,6 +3182,7 @@ LROT_BEGIN(etxlib, NULL, 0)
 #if defined(CROSSFIRE)
   LROT_FUNCENTRY( crossfireTelemetryPop, luaCrossfireTelemetryPop )
   LROT_FUNCENTRY( crossfireTelemetryPush, luaCrossfireTelemetryPush )
+  LROT_FUNCENTRY( crossfireTelemetryPopLast, luaCrossfireTelemetryPopLast )
 #endif
 #if defined(GHOST)
   LROT_FUNCENTRY( ghostTelemetryPop, luaGhostTelemetryPop )

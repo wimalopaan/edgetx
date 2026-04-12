@@ -92,7 +92,7 @@ class LuaScriptManager : public LuaEventHandler
 
   void createTelemetryQueue();
   TelemetryQueue* telemetryQueue() { return luaInputTelemetryFifo; }
-
+  
  protected:
   int luaScriptContextRef = LUA_REFNIL;
   std::vector<int> lvglObjectRefs;
