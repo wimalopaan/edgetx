@@ -2985,6 +2985,7 @@ static int luaGetTrainerStatus(lua_State * L)
 
 // To simplify code below
 #if !defined(BLING_LED_STRIP_LENGTH)
+  #define BLING_LED_STRIP_START 0
   #define BLING_LED_STRIP_LENGTH 0
 #endif
 #if !defined(CFS_LED_STRIP_LENGTH)
