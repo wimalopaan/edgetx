@@ -186,10 +186,16 @@ class ModuleWindow : public Window
 
 #if defined(WMEXTENSION)
     if (!isModuleCrossfire(moduleIdx)) {
-      // Crossfire always uses ch1-16/ch1-32, so don't present choice
       auto line = newLine(grid);
       new StaticText(line, rect_t{}, STR_CHANNELRANGE);
       chRange = new ModuleChannelRange(line, moduleIdx);
+    }
+    else {
+        if ((crossfireModuleStatus[moduleIdx].flags & 0x80) == 0) { // 16 channels
+            auto line = newLine(grid);
+            new StaticText(line, rect_t{}, STR_CHANNELRANGE);
+            chRange = new ModuleChannelRange(line, moduleIdx);            
+        }
     }
 #else
     // Channel Range
