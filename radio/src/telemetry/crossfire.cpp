@@ -358,18 +358,12 @@ void processCrossfireTelemetryFrame(uint8_t module, uint8_t* rxBuffer,
     {
       uint8_t sensorID = 0;
       if (crsfPayloadLen > 10) {
-        if (getCrossfireTelemetryValue<1>(11, value, rxBuffer)) {
-          sensorID = value;
-        }
+        sensorID = getCrossfireTelemetryValue(11, rxBuffer, 1, false);
       }
-      if (getCrossfireTelemetryValue<2>(3, value, rxBuffer))
-        processCrossfireTelemetryValue(BATT_VOLTAGE_INDEX, value, sensorID);
-      if (getCrossfireTelemetryValue<2>(5, value, rxBuffer))
-        processCrossfireTelemetryValue(BATT_CURRENT_INDEX, value, sensorID);
-      if (getCrossfireTelemetryValue<3>(7, value, rxBuffer))
-        processCrossfireTelemetryValue(BATT_CAPACITY_INDEX, value, sensorID);
-      if (getCrossfireTelemetryValue<1>(10, value, rxBuffer))
-        processCrossfireTelemetryValue(BATT_REMAINING_INDEX, value, sensorID);
+      processCrossfireTelemetryValue(BATT_VOLTAGE_INDEX, getCrossfireTelemetryValue(3, rxBuffer, 2, false), sensorID);
+      processCrossfireTelemetryValue(BATT_CURRENT_INDEX, getCrossfireTelemetryValue(5, rxBuffer, 2, false), sensorID);
+      processCrossfireTelemetryValue(BATT_CAPACITY_INDEX, getCrossfireTelemetryValue(7, rxBuffer, 3, false), sensorID);
+      processCrossfireTelemetryValue(BATT_REMAINING_INDEX, getCrossfireTelemetryValue(10, rxBuffer, 1, false), sensorID);
     }
       break;
 
