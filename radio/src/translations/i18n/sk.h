@@ -1246,6 +1246,8 @@
 #define TR_MENU_TRIMS                  CHAR_TRIM "Trimy"
 #define TR_MENU_SWITCHES               CHAR_SWITCH "Spínače"
 #define TR_MENU_LOGICAL_SWITCHES       CHAR_SWITCH "Logické spínače"
+#define TR_MENU_VIRTUAL_SWITCHES       CHAR_SWITCH "Virt. Schalter"
+#define TR_MENU_VCONTROL               "Virtuals"
 #define TR_MENU_TRAINER                CHAR_TRAINER "Tréner"
 #define TR_MENU_CHANNELS               CHAR_CHANNEL "Kanály"
 #define TR_MENU_GVARS                  CHAR_SLIDER "Glob.premenné"
