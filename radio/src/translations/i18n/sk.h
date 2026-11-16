@@ -541,6 +541,8 @@
 #define TR_SLOWDOWN                    TR("Spomaľ(\177)", "Spomalenie(-)")
 #define TR_SLOWUP                      TR("Spomaľ(\176)", "Spomalenie(+)")
 #define TR_CV                          "K"
+#define TR_VC                          "VIn"
+#define TR_VSW                         "VS"
 #define TR_GV                          TR("G", "GP")
 #define TR_RANGE                       "Rozsah"
 #define TR_CENTER                      "Stred"
