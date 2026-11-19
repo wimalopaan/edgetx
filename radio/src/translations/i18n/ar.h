@@ -542,6 +542,8 @@
 #define TR_SLOWDOWN                    TR("إبطاء نزول", "إبطاء النزول")
 #define TR_SLOWUP                      "إبطاء صعود"
 #define TR_CV                          "CV"
+#define TR_VC                          "VIn"
+#define TR_VSW                         "VS"
 #define TR_GV                          TR("G", "GV")
 #define TR_RANGE                       "المدى"
 #define TR_CENTER                      "الوسط"
@@ -1245,6 +1247,8 @@
 #define TR_MENU_TRIMS                  CHAR_TRIM "Trims"
 #define TR_MENU_SWITCHES               CHAR_SWITCH "المفاتيح"
 #define TR_MENU_LOGICAL_SWITCHES       CHAR_SWITCH "Logical switches"
+#define TR_MENU_VIRTUAL_SWITCHES       CHAR_SWITCH "Virt. Schalter"
+#define TR_MENU_VCONTROL               "Virtuals"
 #define TR_MENU_TRAINER                CHAR_TRAINER "Trainer"
 #define TR_MENU_CHANNELS               CHAR_CHANNEL "القنوات"
 #define TR_MENU_GVARS                  CHAR_SLIDER "GVars"
